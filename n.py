@@ -9,7 +9,6 @@ def test(ee):
     print(ee)
 
 def push_one_variantes(name_of_the_attribute, product_template_id, values, product_id):
-
     id_attribute = models.execute_kw(db, uid, password,
     'product.attribute', 'search',
     [[['name', '=', name_of_the_attribute ]]])
@@ -19,47 +18,58 @@ def push_one_variantes(name_of_the_attribute, product_template_id, values, produ
     create_attribute = models.execute_kw(db, uid, password, 'product.attribute.line', 'create', [{
     'product_tmpl_id': product_template_id , 'attribute_id': id_attribute[0]
     }])
+    print(create_attribute, values)
 
 
     if type(values) == list:
+        print('isLIST')
         id_of_values = []
         for value in values:
              # code qui genere une valeur 538/ 539
-            create_variable = models.execute_kw(db, uid, password, 'product.attribute.value', 'create', [{
-            'name': value, 'attribute_id': id_attribute[0]
-            }])
-            id_of_values.append(create_variable)
+        
+            id_of_values.append(create_value_of_variable(value, str(id_attribute[0])))   
+        #     create_variable = models.execute_kw(db, uid, password, 'product.attribute.value', 'create', [{
+        #     'name': value, 'attribute_id': id_attribute[0]
+        #     }])
+        #     id_of_values.append(create_variable)
+        # print("my id values", id_of_values)
     else:
-        print(create_attribute,id_attribute[0], values, product_id )
-        id_attribute_value = models.execute_kw(db, uid, password,
-        'product.attribute.value', 'search',
-        [[['name', '=', values ]]])
-        print('my attribute value', id_attribute_value)
-        # si la valeur existe deja
-        if not id_attribute_value:
-            print('elle existe pas')
-            id_of_values = models.execute_kw(db, uid, password, 'product.attribute.value', 'create', [{
-            'name': values, 'attribute_id': str(id_attribute[0])
-            }])
-            print(id_of_values)
-            # code qui update value_ids 1561 ca marche!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            value_id = models.execute_kw(db, uid, password, 'product.attribute.line', 'write', [[create_attribute], {
-            'value_ids': [(6,0,[id_of_values])]
-            }])
-            print("create value and raccordement to product", value_id)
+        create_value_of_variable(values, str(id_attribute[0]))
+    print("idof values:", id_of_values)
+    value_id = models.execute_kw(db, uid, password, 'product.attribute.line', 'write', [[create_attribute], {
+    'value_ids': [(6,0,id_of_values)]
+    }])
+    print("just racordement variantes product", value_id)
 
-        # sinon cree la
-        else:
+    
+def create_value_of_variable(value, id_attribute):
+    id_attribute_value = models.execute_kw(db, uid, password,
+    'product.attribute.value', 'search',
+    [[['name', '=', value ]]])
+    print('my attribute value', id_attribute_value)
+    # si la valeur existe deja
+    if not id_attribute_value:
+        print('La valeur attribuee n existe pas')
+        id_of_values = models.execute_kw(db, uid, password, 'product.attribute.value', 'create', [{
+        'name': value, 'attribute_id': str(id_attribute[0])
+        }])
+        # code qui update value_ids 1561 ca marche!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        # value_id = models.execute_kw(db, uid, password, 'product.attribute.line', 'write', [[create_attribute], {
+        # 'value_ids': [(6,0,[id_of_values])]
+        # }])
+        # print("create value and raccordement to product", value_id)
 
-            # code qui update value_ids 1561 ca marche!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            # value_id = models.execute_kw(db, uid, password, 'product.attribute.line', 'create', [{
-            # 'product_tmpl_id': product_template_id , 'attribute_id': id_attribute[0], 'value_ids': [(6,0,[id_attribute_value][0])]
-            # }])
-            print("la valeur existe deja")
-            value_id = models.execute_kw(db, uid, password, 'product.attribute.line', 'write', [[create_attribute], {
-            'value_ids': [(6,0,[id_attribute_value][0])]
-            }])
-            print("just racordement variantes product", value_id)
+    # sinon cree la
+    else:
+
+        # code qui update value_ids 1561 ca marche!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        # value_id = models.execute_kw(db, uid, password, 'product.attribute.line', 'create', [{
+        # 'product_tmpl_id': product_template_id , 'attribute_id': id_attribute[0], 'value_ids': [(6,0,[id_attribute_value][0])]
+        # }])
+        print("la valeur existe deja")
+        
+    return id_attribute_value[0]
+
 
 
 
@@ -67,7 +77,7 @@ try:
     uid = common.authenticate(db, username, password, {})
     models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
     # check if have access
-    print("check if i have accsse: ", models.execute_kw(db, uid, password,
+    print("check if i have accsse   : ", models.execute_kw(db, uid, password,
     'product.product', 'check_access_rights',
     ['create'], {'raise_exception': False}))
 
@@ -85,7 +95,7 @@ try:
 
         #create the product
         id_create_product = models.execute_kw(db, uid, password, 'product.product', 'create', [{
-        'name': "yopop122", 'type': "product"
+        'name': "AAA5", 'type': "product"
         }])
         
         # find id template
@@ -97,7 +107,7 @@ try:
         print(template_id, id_create_product)
 
         try:
-            push_one_variantes('Processeur', template_id, 'lolololo', id_create_product)
+            push_one_variantes('Processeur', template_id, ['lolololo', 'dede'], id_create_product)
         except:
             print("can't push variantes")
 
