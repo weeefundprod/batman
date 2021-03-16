@@ -13,7 +13,7 @@ def push_one_variantes(name_of_the_attribute, product_template_id, values, produ
     id_attribute = models.execute_kw(db, uid, password,
     'product.attribute', 'search',
     [[['name', '=', name_of_the_attribute ]]])
-    print(id_attribute)
+    print(' my id attribute', id_attribute)
 
     # code qui  genere un attribut de variantes au produit 1557
     create_attribute = models.execute_kw(db, uid, password, 'product.attribute.line', 'create', [{
@@ -26,7 +26,7 @@ def push_one_variantes(name_of_the_attribute, product_template_id, values, produ
         for value in values:
              # code qui genere une valeur 538/ 539
             create_variable = models.execute_kw(db, uid, password, 'product.attribute.value', 'create', [{
-            'name': value, 'attribute_id': id_attribute[0], 'product_ids': product_id
+            'name': value, 'attribute_id': id_attribute[0]
             }])
             id_of_values.append(create_variable)
     else:
@@ -34,17 +34,10 @@ def push_one_variantes(name_of_the_attribute, product_template_id, values, produ
         id_attribute_value = models.execute_kw(db, uid, password,
         'product.attribute.value', 'search',
         [[['name', '=', values ]]])
-        print(id_attribute_value)
-        if id_attribute_value[0]:
-            # code qui update value_ids 1561 ca marche!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            # value_id = models.execute_kw(db, uid, password, 'product.attribute.line', 'create', [{
-            # 'product_tmpl_id': product_template_id , 'attribute_id': id_attribute[0], 'value_ids': [(6,0,[id_attribute_value][0])]
-            # }])
-            value_id = models.execute_kw(db, uid, password, 'product.attribute.line', 'write', [[create_attribute], {
-            'value_ids': [(6,0,[id_attribute_value][0])]
-            }])
-            print("just racordement variantes product", value_id)
-        else:
+        print('my attribute value', id_attribute_value)
+        # si la valeur existe deja
+        if not id_attribute_value:
+            print('elle existe pas')
             id_of_values = models.execute_kw(db, uid, password, 'product.attribute.value', 'create', [{
             'name': values, 'attribute_id': str(id_attribute[0])
             }])
@@ -55,13 +48,26 @@ def push_one_variantes(name_of_the_attribute, product_template_id, values, produ
             }])
             print("create value and raccordement to product", value_id)
 
+        # sinon cree la
+        else:
+
+            # code qui update value_ids 1561 ca marche!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            # value_id = models.execute_kw(db, uid, password, 'product.attribute.line', 'create', [{
+            # 'product_tmpl_id': product_template_id , 'attribute_id': id_attribute[0], 'value_ids': [(6,0,[id_attribute_value][0])]
+            # }])
+            print("la valeur existe deja")
+            value_id = models.execute_kw(db, uid, password, 'product.attribute.line', 'write', [[create_attribute], {
+            'value_ids': [(6,0,[id_attribute_value][0])]
+            }])
+            print("just racordement variantes product", value_id)
+
 
 
 try:
     uid = common.authenticate(db, username, password, {})
     models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
     # check if have access
-    print("check if i can do it: ", models.execute_kw(db, uid, password,
+    print("check if i have accsse: ", models.execute_kw(db, uid, password,
     'product.product', 'check_access_rights',
     ['create'], {'raise_exception': False}))
 
@@ -79,7 +85,7 @@ try:
 
         #create the product
         id_create_product = models.execute_kw(db, uid, password, 'product.product', 'create', [{
-        'name': "yopop19", 'type': "product"
+        'name': "yopop122", 'type': "product"
         }])
         
         # find id template
@@ -88,10 +94,10 @@ try:
         [id_create_product], {'fields': ['product_tmpl_id']})
 
         template_id = yp[0]['product_tmpl_id'][0]
-        print(template_id)
+        print(template_id, id_create_product)
 
         try:
-            push_one_variantes('Processeur', template_id, 'alalalala', id_create_product)
+            push_one_variantes('Processeur', template_id, 'lolololo', id_create_product)
         except:
             print("can't push variantes")
 
