@@ -5,9 +5,6 @@ from env import *
 common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
 print(common.version())
 
-def test(ee):
-    print(ee)
-
 def push_one_variantes(name_of_the_attribute, product_template_id, values, product_id):
     id_attribute = models.execute_kw(db, uid, password,
     'product.attribute', 'search',
@@ -61,14 +58,32 @@ def create_value_of_variable(value, id_attribute):
 
     # sinon cree la
     else:
-
-        # code qui update value_ids 1561 ca marche!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        # value_id = models.execute_kw(db, uid, password, 'product.attribute.line', 'create', [{
-        # 'product_tmpl_id': product_template_id , 'attribute_id': id_attribute[0], 'value_ids': [(6,0,[id_attribute_value][0])]
-        # }])
         print("la valeur existe deja")
         
     return id_attribute_value[0]
+
+def create_serial_number():
+    stock = models.execute_kw(db, uid, password,
+    'stock.production.lot', 'search',
+    [[['name', '=', 'serialNUMBER' ]]])
+    if not stock:
+        # cree numero de lot mais ne le lie pas a la product
+        push_number_serie = models.execute_kw(db, uid, password, 'stock.production.lot', 'create', [{
+        'name': "kekekeke", 'product_id': id_serial_number[0], 'product_qty':"1.0"
+        }])
+        print("kekekeke", push_number_serie)
+        update_quantity_stock(push_number_serie)
+    else:
+        print('i have already a serial number')
+
+def update_quantity_stock(push_number_serie):
+    push_quantity = models.execute_kw(db, uid, password, 'stock.change.product.qty', 'create', [{
+    'new_quantity': float(1.0), 'product_id': id_serial_number[0], 'lot_id': push_number_serie, 'location_id': "12"
+    }])
+    print('myquantity', push_quantity)
+    # ca marcheee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    models.execute_kw(db, uid, password, 'stock.change.product.qty', 'change_product_qty', [push_quantity])
+
 
 
 
@@ -81,15 +96,18 @@ try:
     'product.product', 'check_access_rights',
     ['create'], {'raise_exception': False}))
 
-    # check if i have the same serial number
+    # check if i have the same name of product
     id_serial_number = models.execute_kw(db, uid, password,
-    'stock.production.lot', 'search',
-    [[['name', '=', 'violet 01' ]]])
+    'product.product', 'search',
+    [[['name', '=', 'dada' ]]])
+    print(id_serial_number)
     if id_serial_number:
         print('No update of database')
         print("read my serial number: ", models.execute_kw(db, uid, password,
-        'stock.production.lot', 'read',
-        [id_serial_number], {'fields': ['name', 'product_id']}))
+        'product.product', 'read',
+        [id_serial_number[0]], {'fields': ['name', 'product_id']}))
+        
+
     else:
         print("Test update dataBase")
 
@@ -110,116 +128,6 @@ try:
             push_one_variantes('Processeur', template_id, ['lolololo', 'dede'], id_create_product)
         except:
             print("can't push variantes")
-
-        # jj = models.execute_kw(db, uid, password,
-        # 'product.template', 'search',
-        # [[['id', '=', 'id_create_product' ]]])
-        # print(models.execute_kw(db, uid, password,
-        # 'product.template', 'read',
-        # [jj], {'fields': ['display_name', 'is_product_variant', 'attribute_line_ids']}))
-
-        # push_serial_number = models.execute_kw(db, uid, password, 'stock.production.lot', 'create', [{
-        # 'name': "titi", 'product_id': "1575"
-        # }])
-        # print(push_serial_number)
-
-        # code qui update my attribute value_ids 1561
-        # models.execute_kw(db, uid, password, 'product.product', 'write', [[2],{
-        # 'product_variant_ids': ['1582']
-        # }])
-        # print(models.execute_kw(db, uid, password, 'product.product', 'product_variant_ids_get', [[2]]))
-
-        # id = models.execute_kw(db, uid, password, 'res.partner', 'create', [{
-        # 'name': "tata", 'city': "Lyon", 'child_ids': ['6', '7']
-        # }])
-        # print(id)
-        # 24734
-        # models.execute_kw(db, uid, password, 'res.partner', 'write', [[24734], {
-        # 'name': "diner"
-        # }])
-        # get record name after having changed it
-        # print(models.execute_kw(db, uid, password, 'res.partner', 'name_get', [[24734]]))
-
-        # create_product = models.execute_kw(db, uid, password, 'product.product', 'create', [{
-        # 'name': "theproduct2", 'type': "product", 'attribute_line_ids': "1557", 
-        # }])
-        # print(create_product)
-
-
-    
-
-    # lds = models.execute_kw(db, uid, password,
-    # 'product.attribute.line', 'search',
-    # [[['id', '=', '2' ]]])
-    # print("read my product.attribute.line: ", models.execute_kw(db, uid, password,
-    # 'product.attribute.line', 'read',
-    # [lds], {'fields': ['display_name', 'value_ids', 'product_tmpl_id', 'attribute_id']}))
-
-
-
-    # ss = models.execute_kw(db, uid, password,
-    # 'product.category', 'search',
-    # [[['id', '=', '1' ]]])
-    # print("read my product.category: ", models.execute_kw(db, uid, password,
-    # 'product.category', 'read',
-    # [ss], {'fields': ['display_name']}))
-
-
-    #find id user
-    # tt = models.execute_kw(db, uid, password,
-    # 'res.users', 'search',
-    # [[['email', '=', 'lisa.thazar@apside-groupe.com' ]]])
-    # print("read my res.users: ", models.execute_kw(db, uid, password,
-    # 'res.users', 'read',
-    # [tt], {'fields': ['display_name']}))
-
-    # create_variable = models.execute_kw(db, uid, password, 'product.attribute.value', 'create', [{
-    # 'name': "zebi", 'attribute_id': "1"
-    # }])
-    # print(create_variable)
-
-
-
-    # # check Id of variantes
-
-    # id_processor_attributes = models.execute_kw(db, uid, password,
-    # 'product.attribute', 'search',
-    # [[['name', '=', 'Processeur' ]]])
-
-    # id_graphic_card_attributes = models.execute_kw(db, uid, password,
-    # 'product.attribute', 'search',
-    # [[['name', '=', 'Carte Graphique' ]]])
-
-    # id_fournisseur_attributes = models.execute_kw(db, uid, password,
-    # 'product.attribute', 'search',
-    # [[['name', '=', 'Fournisseur' ]]])
-
-    # ids = models.execute_kw(db, uid, password,
-    # 'product.product', 'search',
-    # [[['name', '=', 'theproduct5' ]]])
-    # print("read my product: ", models.execute_kw(db, uid, password,
-    # 'product.product', 'read', [ids], {'fields': ['name', 'attribute_line_ids', 'product_variant_ids']}))
-    # #[ids], {'fields': ['default_code', 'display_name', 'description', 'list_price', 'attribute_line_ids', 'categ_id', 'product_variant_ids', 'tracking', 'type', 'uom_id', 'uom_po_id' ]}))
-
-    # kk = models.execute_kw(db, uid, password,
-    # 'product.template', 'search',
-    # [[['name', '=', 'theproduct2' ]]])
-    # print("read my product template: ", models.execute_kw(db, uid, password,
-    # 'product.template', 'read', [kk], {'fields': ['name', 'display_name', 'product_variant_ids', 'product_variant_id','attribute_line_ids']}))
-
-    # ll = models.execute_kw(db, uid, password,
-    # 'product.attribute.value', 'search',
-    # [[['id', '=', '539' ]]])
-    # print("read my product.attribute.value: ", models.execute_kw(db, uid, password,
-    # 'product.attribute.value', 'read',
-    # [ll], {'fields': ['display_name', 'name', 'product_ids', 'attribute_id']}))
-
-    # xx = models.execute_kw(db, uid, password,
-    # 'product.attribute', 'search',
-    # [[['id', '=', '2' ]]])
-    # print("read my product.attribute: ", models.execute_kw(db, uid, password,
-    # 'product.attribute', 'read',
-    # [xx], {'fields': ['display_name', 'name', 'attribute_line_ids', 'value_ids']}))
 
 except:
     print("not works")
