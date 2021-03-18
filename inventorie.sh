@@ -14,17 +14,17 @@ BLUETOOTH=$(dmesg | grep -i bluetooth)
 #IF EMPTY NO DVD 
 if [ -z "$DVD" ]
 then
-    DVD="false"
+    DVD="non"
 else
-    DVD="true"
+    DVD="oui"
 fi
 
 
 if [ -z "$BLUETOOTH" ]
 then
-    BLUETOOTH="false"
+    BLUETOOTH="non"
 else
-    BLUETOOTH="true"
+    BLUETOOTH="oui"
 fi
 export PROCESSOR
 export GRAPHIC_CARD
@@ -42,6 +42,11 @@ chmod 755 p.py
 
 
 python ./p.py
+
+chmod 755 n.py
+
+
+python2 ./n.py
 
 #read -s -p "Souhaitez vous importez votre produit? oui ou non" IMPORT 
 #echo $IMPORT

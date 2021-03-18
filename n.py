@@ -1,5 +1,6 @@
 import xmlrpclib
 from env import *
+from p import *
 
 
 common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
@@ -9,13 +10,19 @@ def push_one_variantes(name_of_the_attribute, product_template_id, values, produ
     id_attribute = models.execute_kw(db, uid, password,
     'product.attribute', 'search',
     [[['name', '=', name_of_the_attribute ]]])
+
+    if not id_attribute:
+        id_attribute[0] = models.execute_kw(db, uid, password, 'product.attribute', 'create', [{
+        'name': name_of_the_attribute
+        }])
+
     print(' my id attribute', id_attribute)
 
     # code qui  genere un attribut de variantes au produit 1557
-    create_attribute = models.execute_kw(db, uid, password, 'product.attribute.line', 'create', [{
+    create_attribute_line = models.execute_kw(db, uid, password, 'product.attribute.line', 'create', [{
     'product_tmpl_id': product_template_id , 'attribute_id': id_attribute[0]
     }])
-    print(create_attribute, values)
+    print(create_attribute_line, values)
 
 
     if type(values) == list:
@@ -33,7 +40,7 @@ def push_one_variantes(name_of_the_attribute, product_template_id, values, produ
     else:
         create_value_of_variable(values, str(id_attribute[0]))
     print("idof values:", id_of_values)
-    value_id = models.execute_kw(db, uid, password, 'product.attribute.line', 'write', [[create_attribute], {
+    value_id = models.execute_kw(db, uid, password, 'product.attribute.line', 'write', [[create_attribute_line], {
     'value_ids': [(6,0,id_of_values)]
     }])
     print("just racordement variantes product", value_id)
@@ -62,14 +69,14 @@ def create_value_of_variable(value, id_attribute):
         
     return id_attribute_value[0]
 
-def create_serial_number():
+def create_serial_number(id_product):
     stock = models.execute_kw(db, uid, password,
     'stock.production.lot', 'search',
     [[['name', '=', 'serialNUMBER' ]]])
     if not stock:
         # cree numero de lot mais ne le lie pas a la product
         push_number_serie = models.execute_kw(db, uid, password, 'stock.production.lot', 'create', [{
-        'name': "kekekeke", 'product_id': id_serial_number[0], 'product_qty':"1.0"
+        'name': serial, 'product_id': id_product, 'product_qty':"1.0"
         }])
         print("kekekeke", push_number_serie)
         update_quantity_stock(push_number_serie)
@@ -78,7 +85,7 @@ def create_serial_number():
 
 def update_quantity_stock(push_number_serie):
     push_quantity = models.execute_kw(db, uid, password, 'stock.change.product.qty', 'create', [{
-    'new_quantity': float(1.0), 'product_id': id_serial_number[0], 'lot_id': push_number_serie, 'location_id': "12"
+    'new_quantity': float(1.0), 'product_id': id_product, 'lot_id': push_number_serie, 'location_id': "12"
     }])
     print('myquantity', push_quantity)
     # ca marcheee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -97,40 +104,69 @@ try:
     ['create'], {'raise_exception': False}))
 
     # check if i have the same name of product
-    id_serial_number = models.execute_kw(db, uid, password,
+    name_product = models.execute_kw(db, uid, password,
     'product.product', 'search',
-    [[['name', '=', 'dada' ]]])
-    print(id_serial_number)
-    if id_serial_number:
-        print('No update of database')
+    [[['name', '=', product ]]])
+    print(' name product', name_product)
+    if name_product:
+        print('I have the name  i got to see the serial number')
         print("read my serial number: ", models.execute_kw(db, uid, password,
         'product.product', 'read',
-        [id_serial_number[0]], {'fields': ['name', 'product_id']}))
+        [name_product[0]], {'fields': ['name', 'product_id']}))
+        id_product = name_product[0]
         
 
     else:
-        print("Test update dataBase")
+        print("I create a new product")
 
         #create the product
-        id_create_product = models.execute_kw(db, uid, password, 'product.product', 'create', [{
-        'name': "AAA5", 'type': "product"
+        id_product = models.execute_kw(db, uid, password, 'product.product', 'create', [{
+        'name': product, 'type': "product"
         }])
         
         # find id template
         yp = models.execute_kw(db, uid, password,
         'product.product', 'read',
-        [id_create_product], {'fields': ['product_tmpl_id']})
+        [id_product], {'fields': ['product_tmpl_id']})
 
         template_id = yp[0]['product_tmpl_id'][0]
-        print(template_id, id_create_product)
+        print(template_id, id_product)
 
         try:
-            push_one_variantes('Processeur', template_id, ['lolololo', 'dede'], id_create_product)
+            push_one_variantes('Processeur', template_id, processor, id_product)
         except:
-            print("can't push variantes")
+            print("can't push variantes Processeur")
 
-except:
-    print("not works")
+        try:
+            push_one_variantes('Carte Graphique', template_id, graphic_card, id_product)
+        except:
+            print("can't push variantes Processeur")
+        try:
+            push_one_variantes('RAM', template_id, processor, id_product)
+        except:
+            print("can't push variantes RAM")
+        try:
+            push_one_variantes(u'Taille \xe9cran', template_id, screens, id_product)
+        except:
+            print("can't push variantes Taille d ecran")
+        try:
+            push_one_variantes('Marque', template_id, vendor, id_product)
+        except:
+            print("can't push variantes Marque")
+        try:
+            push_one_variantes('DVD', template_id, vendor, id_product)
+        except:
+            print("can't push variantes DVD")
+        try:
+            push_one_variantes('BLUETOOTH', template_id, bluetooth, id_product)
+        except:
+            print("can't push variantes bluetooth")
+        try:
+            push_one_variantes('HHDSSD', template_id, hhdssd, id_product)
+        except:
+            print("can't push variantes hddssd")
+    create_serial_number(id_product)
+        
 
-
-    
+except xmlrpclib.Error as err:
+    print(err)
