@@ -61,9 +61,27 @@ print('SCREEN: ', screen)
 print('DVD: ', os.environ["DVD"])
 dvd=os.environ["DVD"]
 
-ram=os.environ["RAM"]
+ram_no_split=os.environ["RAM"]
+ram_split = float(ram_no_split.split('Gi')[0].replace(",", "."))
+if 0 <= ram_split <= 2:
+    ram= '2Go'
+elif 2 <= ram_split <= 4:
+    ram= '4Go'
+elif 4 <= ram_split <= 8:
+    ram= '8Go'
+elif 8 <= ram_split <= 16:
+    ram= '16Go'
+elif 16 <= ram_split <= 24:
+    ram= '24Go'
+elif 24 <= ram_split <= 32:
+    ram= '32Go'
+elif 32 <= ram_split <= 64:
+    ram= '64Go'
+elif 64 <= ram_split <= 128:
+    ram= '128Go'
+elif 12 <= ram_split <= 256:
+    ram= '256Go'
 print('RAM: ', ram)
-
 
 # Closing file 
 f.close()
