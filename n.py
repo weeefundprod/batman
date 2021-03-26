@@ -12,9 +12,11 @@ def push_one_variantes(name_of_the_attribute, product_template_id, values, produ
     [[['name', '=', name_of_the_attribute ]]])
 
     if not id_attribute:
-        id_attribute[0] = models.execute_kw(db, uid, password, 'product.attribute', 'create', [{
+        id_attribute_created = models.execute_kw(db, uid, password, 'product.attribute', 'create', [{
         'name': name_of_the_attribute
         }])
+        id_attribute.append(id_attribute_created)
+
 
     print(' my id attribute', id_attribute)
 
@@ -22,12 +24,11 @@ def push_one_variantes(name_of_the_attribute, product_template_id, values, produ
     create_attribute_line = models.execute_kw(db, uid, password, 'product.attribute.line', 'create', [{
     'product_tmpl_id': product_template_id , 'attribute_id': id_attribute[0]
     }])
-    print(create_attribute_line, values)
+    print("i have create my attribute line",create_attribute_line)
 
-
+    id_of_values = []
     if type(values) == list:
         print('isLIST')
-        id_of_values = []
         for value in values:
              # code qui genere une valeur 538/ 539
         
@@ -38,25 +39,27 @@ def push_one_variantes(name_of_the_attribute, product_template_id, values, produ
         #     id_of_values.append(create_variable)
         # print("my id values", id_of_values)
     else:
-        create_value_of_variable(values, str(id_attribute[0]))
-    print("idof values:", id_of_values)
+        id_of_values.append(create_value_of_variable(values, str(id_attribute[0])))
+    print("id of values:", id_of_values, create_attribute_line)
     value_id = models.execute_kw(db, uid, password, 'product.attribute.line', 'write', [[create_attribute_line], {
     'value_ids': [(6,0,id_of_values)]
     }])
     print("just racordement variantes product", value_id)
 
     
-def create_value_of_variable(value, id_attribute):
-    id_attribute_value = models.execute_kw(db, uid, password,
+def create_value_of_variable(value, id_of_attribute):
+    print(value, id_of_attribute)
+    id_attribute_value_array = models.execute_kw(db, uid, password,
     'product.attribute.value', 'search',
-    [[['name', '=', value ]]])
-    print('my attribute value', id_attribute_value)
+    [['&',['name', '=', value ], [ 'attribute_id.id', '=', id_of_attribute]]])
+    print(" my ids attribute values", id_attribute_value_array)
     # si la valeur existe deja
-    if not id_attribute_value:
+    if not id_attribute_value_array:
         print('La valeur attribuee n existe pas')
-        id_of_values = models.execute_kw(db, uid, password, 'product.attribute.value', 'create', [{
-        'name': value, 'attribute_id': str(id_attribute[0])
+        id_attribute_value = models.execute_kw(db, uid, password, 'product.attribute.value', 'create', [{
+        'name': value, 'attribute_id': id_of_attribute
         }])
+        id_attribute_value_array.append(id_attribute_value)
         # code qui update value_ids 1561 ca marche!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         # value_id = models.execute_kw(db, uid, password, 'product.attribute.line', 'write', [[create_attribute], {
         # 'value_ids': [(6,0,[id_of_values])]
@@ -65,14 +68,15 @@ def create_value_of_variable(value, id_attribute):
 
     # sinon cree la
     else:
-        print("la valeur existe deja")
+        print("la valeur existe deja", )
+    print('my attribute value array', id_attribute_value_array)
         
-    return id_attribute_value[0]
+    return id_attribute_value_array[0]
 
 def create_serial_number(id_product):
     stock = models.execute_kw(db, uid, password,
     'stock.production.lot', 'search',
-    [[['name', '=', 'serialNUMBER' ]]])
+    [[['name', '=', serial ]]])
     if not stock:
         # cree numero de lot mais ne le lie pas a la product
         push_number_serie = models.execute_kw(db, uid, password, 'stock.production.lot', 'create', [{
@@ -99,7 +103,7 @@ try:
     uid = common.authenticate(db, username, password, {})
     models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
     # check if have access
-    print("check if i have accsse   : ", models.execute_kw(db, uid, password,
+    print("check if I have access : ", models.execute_kw(db, uid, password,
     'product.product', 'check_access_rights',
     ['create'], {'raise_exception': False}))
 
@@ -142,11 +146,11 @@ try:
         except:
             print("can't push variantes Processeur")
         try:
-            push_one_variantes('RAM', template_id, processor, id_product)
+            push_one_variantes('RAM', template_id, ram, id_product)
         except:
             print("can't push variantes RAM")
         try:
-            push_one_variantes(u'Taille \xe9cran', template_id, screens, id_product)
+            push_one_variantes(u'Taille \xe9cran', template_id, screen, id_product)
         except:
             print("can't push variantes Taille d ecran")
         try:
@@ -154,7 +158,7 @@ try:
         except:
             print("can't push variantes Marque")
         try:
-            push_one_variantes('DVD', template_id, vendor, id_product)
+            push_one_variantes('DVD', template_id, dvd, id_product)
         except:
             print("can't push variantes DVD")
         try:
