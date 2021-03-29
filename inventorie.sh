@@ -8,24 +8,27 @@ SCREEN=$(xdpyinfo | grep dimensions | sed -r 's/^[^0-9]*([0-9]+x[0-9]+).*$/\1/')
 DVD=$(dmesg | egrep -i --color 'cdrom|dvd|cd/rw|writer')
 PROCESSOR=$(cat /proc/cpuinfo | grep -i "^model name" | awk -F": " '{print $2}' | head -1 | sed 's/ \+/ /g')
 GRAPHIC_CARD=$(lspci | grep -i --color 'vga\|3d\|2d'| awk -F": " '{print $2}' | head -1 | sed 's/ \+/ /g')
+
 RAM=$(free -ht | grep Mem | awk '{print $2}')
+
 # update from old pc
 BLUETOOTH=$(dmesg | grep -i bluetooth)
 #IF EMPTY NO DVD 
 if [ -z "$DVD" ]
 then
-    DVD="false"
+    DVD="non"
 else
-    DVD="true"
+    DVD="oui"
 fi
 
 
 if [ -z "$BLUETOOTH" ]
 then
-    BLUETOOTH="false"
+    BLUETOOTH="non"
 else
-    BLUETOOTH="true"
+    BLUETOOTH="oui"
 fi
+
 export PROCESSOR
 export GRAPHIC_CARD
 export DVD
@@ -33,6 +36,8 @@ export SCREEN
 export HHDSSD
 export RAM
 export BLUETOOTH
+
+
 sudo lshw -json > mydata.json
 sudo lshw -class multimedia -json > multimedia.json
 sudo lshw -class disk -json > disk.json
@@ -42,6 +47,15 @@ chmod 755 p.py
 
 
 python ./p.py
+
+
+rm  mydata.json
+rm multimedia.json
+rm disk.json
+chmod 755 n.py
+
+
+python2 ./n.py
 
 #read -s -p "Souhaitez vous importez votre produit? oui ou non" IMPORT 
 #echo $IMPORT

@@ -55,15 +55,33 @@ screens = [l.split()[-3:] for l in subprocess.check_output(
 
 for s in screens:
     w = float(s[0].replace("mm", "")); h = float(s[2].replace("mm", "")); d = ((w**2)+(h**2))**(0.5)
-    screen = round(d/25.4, r)
+    screen = str(round(d/25.4, r))
 print('SCREEN: ', screen)
 
 print('DVD: ', os.environ["DVD"])
 dvd=os.environ["DVD"]
 
-ram=os.environ["RAM"]
+ram_no_split=os.environ["RAM"]
+ram_split = float(ram_no_split.split('Gi')[0].replace(",", "."))
+if 0 <= ram_split <= 2:
+    ram= '2Go'
+elif 2 <= ram_split <= 4:
+    ram= '4Go'
+elif 4 <= ram_split <= 8:
+    ram= '8Go'
+elif 8 <= ram_split <= 16:
+    ram= '16Go'
+elif 16 <= ram_split <= 24:
+    ram= '24Go'
+elif 24 <= ram_split <= 32:
+    ram= '32Go'
+elif 32 <= ram_split <= 64:
+    ram= '64Go'
+elif 64 <= ram_split <= 128:
+    ram= '128Go'
+elif 12 <= ram_split <= 256:
+    ram= '256Go'
 print('RAM: ', ram)
-
 
 # Closing file 
 f.close()
@@ -136,53 +154,59 @@ bluetooth=os.environ["BLUETOOTH"]
 
 
 
-def sql_connection():
+# def sql_connection():
 
-    try:
+#     try:
 
-        con = sqlite3.connect('./weeefundDatabase')
+#         con = sqlite3.connect('./weeefundDatabase')
 
-        print("Connection is established: Database is created in memory")
-        cursor = con.cursor()
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-        print(cursor.fetchall())
-        cursor.execute("SELECT SERIAL_NUMBER, VENDOR from product")
-        rows = cursor.fetchall()
-        print(rows)
-        alreadyExits = False
-        for row in rows:
-            if row[0] == serial:
-                if row[1] == vendor:
-                    print("Le serial number existe deja")
-                else:
-                    alreadyExits = True
-        if alreadyExits == True:
-            print("Entree en base")
-            sql = "INSERT INTO product (SERIAL_NUMBER, MODEL, SKU, VENDOR, SCREEN, HHD_SSD, GRAPHIC_CARD, WEBCAM, BLUETOOTH, DVD) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-            val = (serial, product, sku, vendor, screen, hhdssd, graphic_card, webcam, bluetooth, dvd)
-            #cursor.execute("INSERT INTO product (SERIAL_NUMBER, MODEL, SKU, VENDOR, SCREEN, HHD_SSD, GRAPHIC_CARD, WEBCAM, BLUETOOTH, DVD) VALUES('testldf', 'test', 'test', 'test', 'test', 'test','test', 'test', 'test', 'test')")
-            cursor.execute( sql,val)
+#         print("Connection is established: Database is created in memory")
+#         cursor = con.cursor()
+#         cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+#         cursor.execute("SELECT SERIAL_NUMBER, MODEL from product")
+#         rows = cursor.fetchall()
+#         print('rows',rows)
+#         alreadyExits = False
+#         for row in rows:
+#             print('row', row)
+#             if row[0] == serial:
+#                 if row[1] == product:
+#                     print("Le serial number existe deja")
+#                     alreadyExits = True
+                    
+#         if not rows:
+#             alreadyExits = False
 
-            #Retrieve data
-            cursor.execute("SELECT * FROM product")
-            rows = cursor.fetchall()
-            for row in rows:
-                print(row)
+#         if alreadyExits == False:
+#             try:
+#                 sql = "INSERT INTO product (SERIAL_NUMBER, MODEL, SKU, VENDOR, SCREEN, HHD_SSD, GRAPHIC_CARD, WEBCAM, BLUETOOTH, DVD) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+#                 val = (serial, product, sku, vendor, screen, hhdssd, graphic_card, webcam, bluetooth, dvd)
+#                 #cursor.execute("INSERT INTO product (SERIAL_NUMBER, MODEL, SKU, VENDOR, SCREEN, HHD_SSD, GRAPHIC_CARD, WEBCAM, BLUETOOTH, DVD) VALUES('testldf', 'test', 'test', 'test', 'test', 'test','test', 'test', 'test', 'test')")
+#                 cursor.execute( sql,val)
+#                 print("Entree en base")
+#             except sqlite3.Error as er:
+#                 print('Not insert in database:', er)
 
-            try:
-                con.commit()
+#             try:
+#                 #Retrieve data
+#                 cursor.execute("SELECT * FROM product")
+#                 rows = cursor.fetchall()
+#                 for row in rows:
+#                     print(row)
 
-            except sqlite3.Error as er:
-                print('er:', er.message)
+#             except sqlite3.Error as er:
+#                 print('error:', er.message)
 
-    except Error:
+#         con.commit()
 
-        print('DADA', Error)
+#     except Error:
 
-    finally:
+#         print( Error)
 
-        con.close()
+#     finally:
 
-sql_connection()
+#         con.close()
+
+# sql_connection()
 
 print('Out python')

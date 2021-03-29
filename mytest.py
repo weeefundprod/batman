@@ -1,7 +1,5 @@
 import xmlrpclib
-from env import *
-from p import *
-
+from envtest import *
 
 common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
 print(common.version())
@@ -46,7 +44,6 @@ def push_one_variantes(name_of_the_attribute, product_template_id, values, produ
     }])
     print("just racordement variantes product", value_id)
 
-    
 def create_value_of_variable(value, id_of_attribute):
     print(value, id_of_attribute)
     id_attribute_value_array = models.execute_kw(db, uid, password,
@@ -73,103 +70,70 @@ def create_value_of_variable(value, id_of_attribute):
         
     return id_attribute_value_array[0]
 
-def push_serial_number(id_product):
-    stock = models.execute_kw(db, uid, password,
-    'stock.production.lot', 'search',
-    [[['name', '=', serial ]]])
-    if not stock:
-        # cree numero de lot mais ne le lie pas a la product
-        push_number_serie = models.execute_kw(db, uid, password, 'stock.production.lot', 'create', [{
-        'name': serial, 'product_id': id_product, 'product_qty':"1.0"
-        }])
-        update_quantity_stock(push_number_serie)
-    else:
-        print('i have already a serial number')
-
-def update_quantity_stock(push_number_serie):
-    push_quantity = models.execute_kw(db, uid, password, 'stock.change.product.qty', 'create', [{
-    'new_quantity': float(1.0), 'product_id': id_product, 'lot_id': push_number_serie, 'location_id': "12"
-    }])
-    print('myquantity', push_quantity)
-    # ca marcheee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    models.execute_kw(db, uid, password, 'stock.change.product.qty', 'change_product_qty', [push_quantity])
-
-
-
-
 
 try:
     uid = common.authenticate(db, username, password, {})
     models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
     # check if have access
-    print("check if I have access : ", models.execute_kw(db, uid, password,
-    'product.product', 'check_access_rights',
-    ['create'], {'raise_exception': False}))
+    # stock.quant without access
+    try:
 
-    # check if i have the same name of product
-    name_product = models.execute_kw(db, uid, password,
-    'product.product', 'search',
-    [[['name', '=', product ]]])
-    print(' name product', name_product)
-    if name_product:
-        print('I have the name  i got to see the serial number')
-        print("read my serial number: ", models.execute_kw(db, uid, password,
-        'product.product', 'read',
-        [name_product[0]], {'fields': ['name', 'product_id']}))
-        id_product = name_product[0]
-        
+        print("check if i can do it: ", models.execute_kw(db, uid, password,
+        'product.attribute.value', 'check_access_rights',
+        ['create'], {'raise_exception': False}))
 
-    else:
-        print("I create a new product")
+        name_product= models.execute_kw(db, uid, password,
+        'product.product', 'search',
+        [[['name', '=', 'beyonce' ]]])
+        print(' name product', name_product)
 
-        #create the product
-        id_product = models.execute_kw(db, uid, password, 'product.product', 'create', [{
-        'name': product, 'type': "product"
-        }])
-        
-        # find id template
         yp = models.execute_kw(db, uid, password,
         'product.product', 'read',
-        [id_product], {'fields': ['product_tmpl_id']})
+        [name_product], {'fields': ['product_tmpl_id']})
 
         template_id = yp[0]['product_tmpl_id'][0]
-        print(template_id, id_product)
 
         try:
-            push_one_variantes('Processeur', template_id, processor, id_product)
-        except:
-            print("can't push variantes Processeur")
+            push_one_variantes(u'Taille \xe9cran', template_id, float(15.5), name_product[0])
+        except xmlrpclib.Error as err:
+            print("can't push variantes Taille d ecran", err)
 
-        try:
-            push_one_variantes('Carte Graphique', template_id, graphic_card, id_product)
-        except:
-            print("can't push variantes Processeur")
-        try:
-            push_one_variantes('RAM', template_id, ram, id_product)
-        except:
-            print("can't push variantes RAM")
-        try:
-            push_one_variantes(u'Taille \xe9cran', template_id, screen, id_product)
-        except:
-            print("can't push variantes Taille d ecran")
-        try:
-            push_one_variantes('Marque', template_id, vendor, id_product)
-        except:
-            print("can't push variantes Marque")
-        try:
-            push_one_variantes('DVD', template_id, dvd, id_product)
-        except:
-            print("can't push variantes DVD")
-        try:
-            push_one_variantes('BLUETOOTH', template_id, bluetooth, id_product)
-        except:
-            print("can't push variantes bluetooth")
-        try:
-            push_one_variantes('HHDSSD', template_id, hhdssd, id_product)
-        except:
-            print("can't push variantes hddssd")
-    create_serial_number(id_product)
-        
+
+        # id_attribute = models.execute_kw(db, uid, password,
+        # 'product.attribute.line', 'search',
+        # [[([ 'attribute_id.id', '=', "9"])]])
+        # print(id_attribute)
+
+
+        # value_id = models.execute_kw(db, uid, password, 'product.attribute.line', 'write', [[1710], {
+        # 'value_ids': [(6,0,[559])]
+        # }])
+    except xmlrpclib.Error as err:
+        print('my error', err)
+
+
+    print("read my stock productin: ", models.execute_kw(db, uid, password,
+    'product.product', 'read',
+    [491], {'fields': [ 'name', 'product_id', 'product_qty', 'product_tmpl_id']}))
+
+
+
+    # check if i have the same serial number
+    id_serial_number = models.execute_kw(db, uid, password,
+    'product.attribute', 'search',
+    [[['name', '=', 'DVD' ]]])
+    print(id_serial_number)
+
+    print("read my product.attribute.value: ", models.execute_kw(db, uid, password,
+    'product.attribute', 'read',
+    [id_serial_number], {'fields': ['display_name', 'name', 'product_ids', 'attribute_id']}))
+
+
+
+
+
+
+
 
 except xmlrpclib.Error as err:
-    print(err)
+        print(err)
