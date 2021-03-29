@@ -4,15 +4,14 @@
 #WEBCAM= $(sudo lshw -class multimedia)
 #v4l2-ctl --list-devices
 #sudo lshw -class multimedia | grep -i 'webcam'
+
 SCREEN=$(xdpyinfo | grep dimensions | sed -r 's/^[^0-9]*([0-9]+x[0-9]+).*$/\1/')
 DVD=$(dmesg | egrep -i --color 'cdrom|dvd|cd/rw|writer')
 PROCESSOR=$(cat /proc/cpuinfo | grep -i "^model name" | awk -F": " '{print $2}' | head -1 | sed 's/ \+/ /g')
 GRAPHIC_CARD=$(lspci | grep -i --color 'vga\|3d\|2d'| awk -F": " '{print $2}' | head -1 | sed 's/ \+/ /g')
-
 RAM=$(free -ht | grep Mem | awk '{print $2}')
-
-# update from old pc
 BLUETOOTH=$(dmesg | grep -i bluetooth)
+
 #IF EMPTY NO DVD 
 if [ -z "$DVD" ]
 then
