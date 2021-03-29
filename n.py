@@ -73,7 +73,7 @@ def create_value_of_variable(value, id_of_attribute):
         
     return id_attribute_value_array[0]
 
-def create_serial_number(id_product):
+def push_serial_number(id_product):
     stock = models.execute_kw(db, uid, password,
     'stock.production.lot', 'search',
     [[['name', '=', serial ]]])
@@ -82,7 +82,6 @@ def create_serial_number(id_product):
         push_number_serie = models.execute_kw(db, uid, password, 'stock.production.lot', 'create', [{
         'name': serial, 'product_id': id_product, 'product_qty':"1.0"
         }])
-        print("kekekeke", push_number_serie)
         update_quantity_stock(push_number_serie)
     else:
         print('i have already a serial number')

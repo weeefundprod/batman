@@ -154,59 +154,59 @@ bluetooth=os.environ["BLUETOOTH"]
 
 
 
-def sql_connection():
+# def sql_connection():
 
-    try:
+#     try:
 
-        con = sqlite3.connect('./weeefundDatabase')
+#         con = sqlite3.connect('./weeefundDatabase')
 
-        print("Connection is established: Database is created in memory")
-        cursor = con.cursor()
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-        cursor.execute("SELECT SERIAL_NUMBER, MODEL from product")
-        rows = cursor.fetchall()
-        print('rows',rows)
-        alreadyExits = False
-        for row in rows:
-            print('row', row)
-            if row[0] == serial:
-                if row[1] == product:
-                    print("Le serial number existe deja")
-                    alreadyExits = True
+#         print("Connection is established: Database is created in memory")
+#         cursor = con.cursor()
+#         cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+#         cursor.execute("SELECT SERIAL_NUMBER, MODEL from product")
+#         rows = cursor.fetchall()
+#         print('rows',rows)
+#         alreadyExits = False
+#         for row in rows:
+#             print('row', row)
+#             if row[0] == serial:
+#                 if row[1] == product:
+#                     print("Le serial number existe deja")
+#                     alreadyExits = True
                     
-        if not rows:
-            alreadyExits = False
+#         if not rows:
+#             alreadyExits = False
 
-        if alreadyExits == False:
-            try:
-                sql = "INSERT INTO product (SERIAL_NUMBER, MODEL, SKU, VENDOR, SCREEN, HHD_SSD, GRAPHIC_CARD, WEBCAM, BLUETOOTH, DVD) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-                val = (serial, product, sku, vendor, screen, hhdssd, graphic_card, webcam, bluetooth, dvd)
-                #cursor.execute("INSERT INTO product (SERIAL_NUMBER, MODEL, SKU, VENDOR, SCREEN, HHD_SSD, GRAPHIC_CARD, WEBCAM, BLUETOOTH, DVD) VALUES('testldf', 'test', 'test', 'test', 'test', 'test','test', 'test', 'test', 'test')")
-                cursor.execute( sql,val)
-                print("Entree en base")
-            except sqlite3.Error as er:
-                print('Not insert in database:', er)
+#         if alreadyExits == False:
+#             try:
+#                 sql = "INSERT INTO product (SERIAL_NUMBER, MODEL, SKU, VENDOR, SCREEN, HHD_SSD, GRAPHIC_CARD, WEBCAM, BLUETOOTH, DVD) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+#                 val = (serial, product, sku, vendor, screen, hhdssd, graphic_card, webcam, bluetooth, dvd)
+#                 #cursor.execute("INSERT INTO product (SERIAL_NUMBER, MODEL, SKU, VENDOR, SCREEN, HHD_SSD, GRAPHIC_CARD, WEBCAM, BLUETOOTH, DVD) VALUES('testldf', 'test', 'test', 'test', 'test', 'test','test', 'test', 'test', 'test')")
+#                 cursor.execute( sql,val)
+#                 print("Entree en base")
+#             except sqlite3.Error as er:
+#                 print('Not insert in database:', er)
 
-            try:
-                #Retrieve data
-                cursor.execute("SELECT * FROM product")
-                rows = cursor.fetchall()
-                for row in rows:
-                    print(row)
+#             try:
+#                 #Retrieve data
+#                 cursor.execute("SELECT * FROM product")
+#                 rows = cursor.fetchall()
+#                 for row in rows:
+#                     print(row)
 
-            except sqlite3.Error as er:
-                print('error:', er.message)
+#             except sqlite3.Error as er:
+#                 print('error:', er.message)
 
-        con.commit()
+#         con.commit()
 
-    except Error:
+#     except Error:
 
-        print( Error)
+#         print( Error)
 
-    finally:
+#     finally:
 
-        con.close()
+#         con.close()
 
-sql_connection()
+# sql_connection()
 
 print('Out python')
