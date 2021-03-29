@@ -6,10 +6,6 @@ import subprocess
 import re
 from math import *
 
-
-
-
-
 #res = subprocess.check_output(['dmesg','stdout','egrep', '-i', '--color', '"cdrom|dvd|cd/rw|writer"'])
 #cmd = "xdpyinfo | grep dimensions | sed -r 's/^[^0-9]*([0-9]+x[0-9]+).*$/\1/'"
 
@@ -55,8 +51,8 @@ for s in screens:
     screen = str(round(d/25.4, r))
 print('SCREEN: ', screen)
 
-print('DVD: ', os.environ["DVD"])
 dvd=os.environ["DVD"]
+print('DVD: ', os.environ["DVD"])
 
 ram_no_split=os.environ["RAM"]
 ram_split = float(ram_no_split.split('Gi')[0].replace(",", "."))
@@ -96,14 +92,6 @@ diskjson.close()
 diskjson.close()
 print('HHDSSD: ', hhdssd)
 
-#ssd (donnees introuvables sur PC lisa)
-#print(data[0]['children'][0]['children'][4]['children'][12]['children'][0]['product'])
-
-#webcam (donnees introuvables)
-#print(data[0]['children'][0]['children'][4]['children'][10]['children'][0]['children'][0]['children'][0]['product'])
-
-
-
 #searching Webcam
 multimedia = open('multimedia.json')
 datamultimedia= json.load(multimedia)
@@ -116,6 +104,5 @@ print('Webcam :', webcam)
 #searching bluetooth
 print('bluetooth: ', os.environ["BLUETOOTH"])
 bluetooth=os.environ["BLUETOOTH"]
-
 
 print('Out python')
