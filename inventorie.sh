@@ -1,5 +1,5 @@
 #!/bin/bash
-#HHDSSD=$(sudo lshw -C disk)
+
 #need install
 #WEBCAM= $(sudo lshw -class multimedia)
 #v4l2-ctl --list-devices
@@ -41,29 +41,23 @@ export BLUETOOTH
 sudo lshw -json > mydata.json
 sudo lshw -class multimedia -json > multimedia.json
 sudo lshw -class disk -json > disk.json
-#sudo lshw -class communication -json > communication.json
 
-chmod 755 p.py
+chmod 755 get_value_of_variantes.py
+python ./get_value_of_variantes.py
 
-
-python ./p.py
-
-
+# delete json config
 rm  mydata.json
 rm multimedia.json
 rm disk.json
-chmod 755 n.py
 
+# use python2 for odoo database
+chmod 755./push_to_odoo_database.py
+python2 ./push_to_odoo_database.py
 
-python2 ./n.py
+# generate line of product in csv(not used)
+chmod 755./push_to_csv.py
+python2 ./push_to_odoo_database.py
 
-#read -s -p "Souhaitez vous importez votre produit? oui ou non" IMPORT 
-#echo $IMPORT
-
-#if [ $IMPORT = 'o' ] || [ $IMPORT = 'oui' ]
-#then
-#chmod 755 updateDatabase.py
-#python ./updateDatabase.py
-#else
-#echo -e "Produit non importé dans la base de données"
-#fi
+# push to database (not used)
+chmod 755./push_to_database.py
+python2 ./push_to_odoo_database.py
