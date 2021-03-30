@@ -8,27 +8,23 @@ from math import *
 
 print("get value")
 #res = subprocess.check_output(['dmesg','stdout','egrep', '-i', '--color', '"cdrom|dvd|cd/rw|writer"'])
-#cmd = "xdpyinfo | grep dimensions | sed -r 's/^[^0-9]*([0-9]+x[0-9]+).*$/\1/'"
 
-# Opening JSON file 
-f = open('mydata.json') 
-# returns JSON object as  
-# a dictionary 
-data = json.load(f) 
   
-vendor=data[0]['vendor']
-print('Vendor: ',data[0]['vendor'])
+vendor=os.environ["VENDOR"]
+print('Vendor: ',vendor)
 
-product=data[0]['product']
-print('Product: ',data[0]['product'])
+product=os.environ["PRODUCT"]
+print('Product: ',product)
 
-serial_number=data[0]['serial']
-print('Serial: ',data[0]['serial'])
 
-if "sku" in data[0]['configuration']: 
-    sku = data[0]['configuration']['sku']
+bluetooth=os.environ["BLUETOOTH"]
+print('bluetooth: ', bluetooth)
+
+if not os.environ["SKU"]: 
+    sku = os.environ["SKU"]
 else:
     sku = None
+print('sku: ', sku)
 
 
 graphic_card= os.environ["GRAPHIC_CARD"]
@@ -49,7 +45,7 @@ for s in screens:
 print('SCREEN: ', screen)
 
 dvd=os.environ["DVD"]
-print('DVD: ', os.environ["DVD"])
+print('DVD: ', dvd)
 
 ram_no_split=os.environ["RAM"]
 ram_split = float(ram_no_split.split('Gi')[0].replace(",", "."))
@@ -73,8 +69,6 @@ elif 12 <= ram_split <= 256:
     ram= '256Go'
 print('RAM: ', ram)
 
-# Closing file 
-f.close()
 
 hhdssd = list()
 diskjson= open('disk.json')
@@ -87,16 +81,15 @@ diskjson.close()
 print('HHDSSD: ', hhdssd)
 
 #searching Webcam
-multimedia = open('multimedia.json')
-datamultimedia= json.load(multimedia)
-webcam = 'NULL'
-for i in datamultimedia:
-    if re.search('webcam', i['product'] , re.IGNORECASE): webcam = i['product']
-multimedia.close()
-print('Webcam :', webcam)
+webcam=os.environ["WEBCAM"]
+print('Webcam: ', webcam)
+
 
 #searching bluetooth
-print('bluetooth: ', os.environ["BLUETOOTH"])
 bluetooth=os.environ["BLUETOOTH"]
+print('bluetooth: ', bluetooth)
+
+serial_number=os.environ["SERIAL_NUMBER"]
+print('Serial Number: ', serial_number)
 
 print('Out python')
