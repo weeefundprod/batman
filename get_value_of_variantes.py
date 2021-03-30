@@ -6,6 +6,7 @@ import subprocess
 import re
 from math import *
 
+print("get value")
 #res = subprocess.check_output(['dmesg','stdout','egrep', '-i', '--color', '"cdrom|dvd|cd/rw|writer"'])
 #cmd = "xdpyinfo | grep dimensions | sed -r 's/^[^0-9]*([0-9]+x[0-9]+).*$/\1/'"
 

@@ -2,11 +2,12 @@ import csv
 import pandas as pd
 from get_value_of_variantes import *
 
+print("push to csv")
 
-csv_file = open("weefundinventory.csv", "w")
+# csv_file = open("weefundinventory.csv", "w")
 
-with open('weeefundInventory.csv','a') as fd:
-    fd.write(str(serial_number, product))
+# with open('weeefundInventory.csv','a') as fd:
+#     fd.write(str(serial_number, product))
 
 data = [(serial_number,product,sku,vendor,screen,ram,hhdssd,graphic_card,webcam,bluetooth,dvd)]
 df = pd.DataFrame(data)

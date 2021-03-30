@@ -42,21 +42,21 @@ sudo lshw -class multimedia -json > multimedia.json
 sudo lshw -class disk -json > disk.json
 
 chmod 755 get_value_of_variantes.py
-python ./get_value_of_variantes.py
 
 # delete json config
-rm  mydata.json
-rm multimedia.json
-rm disk.json
+# rm  mydata.json
+# rm multimedia.json
+# rm disk.json
 
-# use python2 for odoo database
-chmod 755./push_to_odoo_database.py
-python2 ./push_to_odoo_database.py
+# # use python2 for odoo database
+# chmod 755 ./push_to_odoo_database.py
+# python2 ./push_to_odoo_database.py
 
-# generate line of product in csv(not used)
-chmod 755./push_to_csv.py
-python2 ./push_to_odoo_database.py
+# # generate line of product in csv(not used)
+chmod 755 ./push_to_csv.py
+python ./push_to_csv.py
 
-# push to database (not used)
-chmod 755./push_to_database.py
-python2 ./push_to_odoo_database.py
+# # push to database (not used)
+chmod 755 ./push_to_database.py
+python2 ./push_to_database.py
+
