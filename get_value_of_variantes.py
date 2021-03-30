@@ -36,10 +36,6 @@ print('Carte Graphique: ',graphic_card)
 processor= os.environ["PROCESSOR"]
 print('Processor: ', processor)
 
-#screenArray = os.environ["SCREEN"].split('x')
-#screen = sqrt(((int(screenArray[0]))**2) + ((int(screenArray[1]))**2))* 0.0104166667
-#print('SCREEN: ', screen)
-
 # change the round factor if you like
 r = 1
 
@@ -79,9 +75,6 @@ print('RAM: ', ram)
 # Closing file 
 f.close()
 
-#hhdssd = os.environ["HHDSSD"][0]
-#print('HHDSSD: ', hhdssd)
-#searching ssd
 hhdssd = list()
 diskjson= open('disk.json')
 disk= json.load(diskjson)
