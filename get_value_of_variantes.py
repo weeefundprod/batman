@@ -1,3 +1,4 @@
+#!/usr/bin/pyhton3
 import os
 import test
 import json
@@ -70,14 +71,7 @@ elif 12 <= ram_split <= 256:
 print('RAM: ', ram)
 
 
-hhdssd = list()
-diskjson= open('disk.json')
-disk= json.load(diskjson)
-for i in disk:
-	if i['description'] == 'ATA Disk':
-    		hhdssd.append(i['serial'])
-diskjson.close()
-diskjson.close()
+hhdssd  = os.environ['MODEL_HHD'].splitlines()
 print('HHDSSD: ', hhdssd)
 
 #searching Webcam
