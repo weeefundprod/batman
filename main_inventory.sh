@@ -15,7 +15,7 @@ HHDSSD_NAME=$(cat /sys/class/block/sda/device/model)
 WEBCAM=$(v4l2-ctl --list-devices | head -1| awk -F": " '{print $1}')
 #ID_HHD_SDD=$(sudo hdparm -I /dev/sd? | grep 'Serial\ Number'| awk -F": " '{print $2}'| head -1 | sed 's/ \+/ /g' | sed -e :a -e '/,$/N; s/,\n/ /; ta')
 MODEL_HH=$(sudo cat /proc/scsi/scsi | grep "Vendor: ATA"| awk '{print $4, $5}')
-MODEL_HDD_SDD=$(sudo smartctl -i /dev/sda | grep "Device Model:"| awk '{print $3, $4}')
+MODEL_HHD_SDD=$(sudo smartctl -i /dev/sda | grep "Device Model:"| awk '{print $3, $4}')
 ID_HHD_SDD=$(sudo smartctl -i /dev/sda | grep "Serial Number:" | awk '{print $3}')
 
 echo $MODEL_HH

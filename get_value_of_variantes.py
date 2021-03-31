@@ -84,7 +84,7 @@ id_hhd_ssds = os.environ['ID_HHD_SDD'].splitlines()
 print('Id hhd ssd', id_hhd_ssds)
 
 array_hhd_ssd = []
-for i in range(len(hhdssd)):
+for i in range(len(hhdssds)):
     object_hhd_ssd = Hhd_Sdd(id_hhd_ssds[i],hhdssds[i] )
     array_hhd_ssd.append(object_hhd_ssd)
 
