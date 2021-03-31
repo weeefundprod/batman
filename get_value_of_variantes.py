@@ -71,8 +71,22 @@ elif 12 <= ram_split <= 256:
 print('RAM: ', ram)
 
 
-hhdssd  = os.environ['MODEL_HHD'].splitlines()
+hhdssd  = os.environ['MODEL_HH'].splitlines()
 print('HHDSSD: ', hhdssd)
+
+class Hhd_Sdd:
+  def __init__(self, id_hhd_ssd, model_hhd_sdd):
+    self.id_hhd_ssd = id_hhd_ssd
+    self.model_hhd_sdd = model_hhd_sdd
+
+id_hhd_ssd = os.environ['ID_HHD_SDD'].splitlines()
+print('Id hhd ssd', id_hhd_ssd)
+array_hhd_ssd = []
+for i in range(len(hhdssd)):
+    object_hhd_ssd = Hhd_Sdd(id_hhd_ssd[i],hhdssd[i] )
+    array_hhd_ssd.append(object_hhd_ssd)
+
+
 
 #searching Webcam
 webcam=os.environ["WEBCAM"]

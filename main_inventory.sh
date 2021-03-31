@@ -13,7 +13,7 @@ VENDOR=$(sudo cat /sys/class/dmi/id/sys_vendor)
 HHDSSD_NAME=$(cat /sys/class/block/sda/device/model)
 #need install
 WEBCAM=$(v4l2-ctl --list-devices | head -1| awk -F": " '{print $1}')
-ID_HHD_SDD=$(sudo hdparm -I /dev/sd? | grep 'Serial\ Number'| awk -F": " '{print $2}'| head -1 | sed 's/ \+/ /g' | sed -e :a -e '/,$/N; s/,\n/ /; ta')
+#ID_HHD_SDD=$(sudo hdparm -I /dev/sd? | grep 'Serial\ Number'| awk -F": " '{print $2}'| head -1 | sed 's/ \+/ /g' | sed -e :a -e '/,$/N; s/,\n/ /; ta')
 MODEL_HH=$(sudo cat /proc/scsi/scsi | grep "Vendor: ATA"| awk '{print $4, $5}')
 MODEL_HDD_SDD=$(sudo smartctl -i /dev/sda | grep "Device Model:"| awk '{print $3, $4}')
 ID_HHD_SDD=$(sudo smartctl -i /dev/sda | grep "Serial Number:" | awk '{print $3}')
@@ -59,7 +59,7 @@ export WEBCAM
 export ID_HHD_SDD
 export HHDSSD_NAME
 export SERIAL_NUMBER
-export -f MODEL_HH
+export MODEL_HH
 # sudo lshw -json > mydata.json
 # sudo lshw -class multimedia -json > multimedia.json
 sudo lshw -class disk -json > disk.json
