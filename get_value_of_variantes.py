@@ -7,6 +7,11 @@ import subprocess
 import re
 from math import *
 
+class Hhd_Sdd:
+  def __init__(self, id_hhd_ssd, model_hhd_sdd):
+    self.id_hhd_ssd = id_hhd_ssd
+    self.model_hhd_sdd = model_hhd_sdd
+
 print("get value")
 #res = subprocess.check_output(['dmesg','stdout','egrep', '-i', '--color', '"cdrom|dvd|cd/rw|writer"'])
 
@@ -71,19 +76,16 @@ elif 12 <= ram_split <= 256:
 print('RAM: ', ram)
 
 
-hhdssd  = os.environ['MODEL_HH'].splitlines()
-print('HHDSSD: ', hhdssd)
+hhdssds  = os.environ['MODEL_HH'].splitlines()
+print('HHDSSD: ', hhdssds)
 
-class Hhd_Sdd:
-  def __init__(self, id_hhd_ssd, model_hhd_sdd):
-    self.id_hhd_ssd = id_hhd_ssd
-    self.model_hhd_sdd = model_hhd_sdd
 
-id_hhd_ssd = os.environ['ID_HHD_SDD'].splitlines()
-print('Id hhd ssd', id_hhd_ssd)
+id_hhd_ssds = os.environ['ID_HHD_SDD'].splitlines()
+print('Id hhd ssd', id_hhd_ssds)
+
 array_hhd_ssd = []
 for i in range(len(hhdssd)):
-    object_hhd_ssd = Hhd_Sdd(id_hhd_ssd[i],hhdssd[i] )
+    object_hhd_ssd = Hhd_Sdd(id_hhd_ssds[i],hhdssds[i] )
     array_hhd_ssd.append(object_hhd_ssd)
 
 
