@@ -15,6 +15,7 @@ HHDSSD_NAME=$(cat /sys/class/block/sda/device/model)
 WEBCAM=$(v4l2-ctl --list-devices | head -1| awk -F": " '{print $1}')
 MODEL_HHD_SDD=$(udevadm info --query=all --name=/dev/sda | grep ID_SERIAL_SHORT)
 ID_HHD_SDD=$(sudo hdparm -I /dev/sd? | grep 'Serial\ Number'| awk -F": " '{print $2}'| head -1 | sed 's/ \+/ /g')
+MODEL_HHD=$(cat /proc/scsi/scsi | grep "Vendor: ATA"| awk '{print $4, $5}')
 echo $HHDSSD_NAME
 echo $MODEL_HHD_SDD
 echo $ID_HHD_SDD
@@ -60,6 +61,7 @@ export SERIAL_NUMBER
 # sudo lshw -json > mydata.json
 # sudo lshw -class multimedia -json > multimedia.json
 sudo lshw -class disk -json > disk.json
+cp /proc/scsi/scsi hhdsdd.txt
 
 chmod 755 get_value_of_variantes.py
 
