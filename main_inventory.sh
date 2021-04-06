@@ -62,7 +62,7 @@ export SERIAL_NUMBER
 export MODEL_HH
 # sudo lshw -json > mydata.json
 # sudo lshw -class multimedia -json > multimedia.json
-sudo lshw -class disk -json > disk.json
+sudo lshw -class disk -xml > disk.xml
 
 chmod 755 get_value_of_variantes.py
 
@@ -72,8 +72,8 @@ chmod 755 get_value_of_variantes.py
 # rm disk.json
 
 # # use python2 for odoo database
-# chmod 755 ./push_to_odoo_database.py
-# python2 ./push_to_odoo_database.py
+chmod 755 ./push_to_odoo_database.py
+python2 ./push_to_odoo_database.py
 
 # # generate line of product in csv(not used)
 # chmod 755 ./push_to_csv.py

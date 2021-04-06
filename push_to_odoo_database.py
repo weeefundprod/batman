@@ -2,36 +2,39 @@ import xmlrpclib
 from env import *
 from get_value_of_variantes import *
 
+try:
+    common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
+    print('See the version of Database Odoo', common.version())
+except xmlrpclib.Error as err:
+    print(err)
 
-common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
-print('See the version of Database Odoo', common.version())
-
+# my function
 def push_one_variante(name_of_the_attribute, product_template_id, values, product_id):
     #get or not the id of the attribute
-    id_attribute = models.execute_kw(db, uid, password,
+    id_attributes = models.execute_kw(db, uid, password,
     'product.attribute', 'search',
     [[['name', '=', name_of_the_attribute ]]])
 
-    if not id_attribute:
+    if not id_attributes:
         id_attribute_created = models.execute_kw(db, uid, password, 'product.attribute', 'create', [{
         'name': name_of_the_attribute
         }])
-        id_attribute.append(id_attribute_created)
+        id_attributes.append(id_attribute_created)
 
-    print(' my id attribute', id_attribute)
+    print(' my id attribute', id_attributes)
 
     # code qui  genere un attribut line de variantes au produit
     create_attribute_line = models.execute_kw(db, uid, password, 'product.attribute.line', 'create', [{
-    'product_tmpl_id': product_template_id , 'attribute_id': id_attribute[0]
+    'product_tmpl_id': product_template_id , 'attribute_id': id_attributes[0]
     }])
     print("I have created my attribute line",create_attribute_line)
 
     id_of_values = []
     if type(values) == list:
         for value in values:
-            id_of_values.append(get_id_of_value_of_variantes(value, str(id_attribute[0])))
+            id_of_values.append(get_id_of_value_of_variantes(value, str(id_attributes[0])))
     else:
-        id_of_values.append(get_id_of_value_of_variantes(values, str(id_attribute[0])))
+        id_of_values.append(get_id_of_value_of_variantes(values, str(id_attributes[0])))
     print("id of values:", id_of_values, create_attribute_line)
     value_id = models.execute_kw(db, uid, password, 'product.attribute.line', 'write', [[create_attribute_line], {
     'value_ids': [(6,0,id_of_values)]
@@ -44,7 +47,7 @@ def get_id_of_value_of_variantes(value, id_of_attribute):
     'product.attribute.value', 'search',
     [['&',['name', '=', value ], [ 'attribute_id.id', '=', id_of_attribute]]])
 
-    # si la valeur existe deja
+    # si la valeur existe pas
     if not id_attribute_value_array:
         print('La valeur', value,' attribuee n existe pas')
         id_attribute_value = models.execute_kw(db, uid, password, 'product.attribute.value', 'create', [{
@@ -81,7 +84,10 @@ def update_quantity_stock(push_number_serie):
 
 
 try:
-    uid = common.authenticate(db, username, password, {})
+    try:
+        uid = common.authenticate(db, username, password, {})
+    except xmlrpclib.Error as err:
+        print(err)
     models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
     # check if have access
     print("check if I have access : ", models.execute_kw(db, uid, password,

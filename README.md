@@ -33,3 +33,12 @@ conda activate py2
 source ~/anaconda3/bin/activate root
 # batman
 # batman
+
+
+sudo dcs
+restore disk
+multicast
+
+32
+300
+allumer faire f12 sur le pc qui reçoit

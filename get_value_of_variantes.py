@@ -7,6 +7,14 @@ import subprocess
 import re
 from math import *
 
+import xml.etree.ElementTree as ET
+tree = ET.parse('disk.xml')
+disk_xml = tree.getroot()
+
+for child in disk_xml:
+    for s in child:
+        print(s.tag, s.name)
+
 class Hhd_Sdd:
   def __init__(self, id_hhd_ssd, model_hhd_sdd):
     self.id_hhd_ssd = id_hhd_ssd
