@@ -25,10 +25,10 @@ continue_script () {
 }
 
 valid_setup () {
-    export vendable
-    export company
-    export date
+    num_lot="$vendable-$company-$date"
+    echo "$num_lot"
     echo "Set up fait!"
+    export num_lot
 }
 
 
