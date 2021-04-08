@@ -39,6 +39,12 @@ sudo dcs
 restore disk
 multicast
 
+
+
+
 32
 300
 allumer faire f12 sur le pc qui reçoit
+
+pour réaliser un nouveau set-up:
+source setup_before_start.sh

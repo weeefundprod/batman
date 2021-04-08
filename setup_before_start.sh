@@ -8,13 +8,13 @@ v="V"
 continue_script () {
     echo "Quel est le nom de l'entreprise ?"
     read company
-    echo "Entrer une date au format JJMMAA:"
+    echo "Entrer une date au format JJMMAA :"
     read date
     if [[ $date =~ ([0-9]{6}) ]];then
         valid_setup
     else
         echo "La valeur entrée n'est pas bonne."
-        echo "Entrer une date au format JJMMAA:"
+        echo "Entrer une date au format JJMMAA :"
         read date
         if [[ $date =~ ([0-9]{6}) ]];then
             valid_setup
@@ -25,10 +25,12 @@ continue_script () {
 }
 
 valid_setup () {
-    num_lot="$vendable-${company^^}-$date"
+    num_lot="$vendable-${company^^}-$date-"
     echo "$num_lot"
     echo "Set up fait!"
-    export num_lot
+    export increment=000
+    echo "$num_lot" > lot_encours.txt
+    . ./main_inventory.sh
 }
 
 

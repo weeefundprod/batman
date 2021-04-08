@@ -9,8 +9,6 @@ try:
     con = sqlite3.connect('./weeefundDatabase')
     print("Connection is established: Database is created in memory")
     cursor = con.cursor()
-
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
     cursor.execute("SELECT SERIAL_NUMBER, MODEL from product")
     rows = cursor.fetchall()
 

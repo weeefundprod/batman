@@ -7,20 +7,20 @@ import subprocess
 import re
 from math import *
 
-import xml.etree.ElementTree as ET
-tree = ET.parse('disk.xml')
-disk_xml = tree.getroot()
+# TODO Fix get disk serial number
+# import xml.etree.ElementTree as ET
+# tree = ET.parse('disk.xml')
+# disk_xml = tree.getroot()
 
-for child in disk_xml:
-    for s in child:
-        print(s.tag, s.name)
+# for child in disk_xml:
+#     for s in child:
+#         print(s.tag, s.name)
 
-class Hhd_Sdd:
-  def __init__(self, id_hhd_ssd, model_hhd_sdd):
-    self.id_hhd_ssd = id_hhd_ssd
-    self.model_hhd_sdd = model_hhd_sdd
+# class Hhd_Sdd:
+#   def __init__(self, id_hhd_ssd, model_hhd_sdd):
+#     self.id_hhd_ssd = id_hhd_ssd
+#     self.model_hhd_sdd = model_hhd_sdd
 
-print("get value")
 #res = subprocess.check_output(['dmesg','stdout','egrep', '-i', '--color', '"cdrom|dvd|cd/rw|writer"'])
 
   
@@ -88,13 +88,13 @@ hhdssds  = os.environ['MODEL_HH'].splitlines()
 print('HHDSSD: ', hhdssds)
 
 
-id_hhd_ssds = os.environ['ID_HHD_SDD'].splitlines()
-print('Id hhd ssd', id_hhd_ssds)
+# id_hhd_ssds = os.environ['ID_HHD_SDD'].splitlines()
+# print('Id hhd ssd', id_hhd_ssds)
 
-array_hhd_ssd = []
-for i in range(len(hhdssds)):
-    object_hhd_ssd = Hhd_Sdd(id_hhd_ssds[i],hhdssds[i] )
-    array_hhd_ssd.append(object_hhd_ssd)
+# array_hhd_ssd = []
+# for i in range(len(hhdssds)):
+#     object_hhd_ssd = Hhd_Sdd(id_hhd_ssds[i],hhdssds[i] )
+#     array_hhd_ssd.append(object_hhd_ssd)
 
 
 
