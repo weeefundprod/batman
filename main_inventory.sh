@@ -1,4 +1,27 @@
 #!/bin/bash
+NUMERO_LOT=$(cat ./lot_encours.txt)
+get_internal_number (){
+    last_number=$(tail -n 1 V-EN-030303.txt | sed 's/.*\(...\)/\1/')
+    inc=$(printf "%03d\n" $(($last_number + 1)))
+    INTERNAL_NUMBER="$NUMERO_LOT$inc"
+    echo "$INTERNAL_NUMBER"
+    echo "$NUMERO_LOT$inc" >> "$NUMERO_LOT".txt
+}
+
+if [ -z "$NUMERO_LOT" ]
+then
+    source setup_before_start
+else
+    echo "Le numero de lot $NUMERO_LOT est-il correct ? O/N"
+    read restart_set_up
+    if [ "$restart_set_up" == "O" ] || [ "$vendable" == "o" ];then
+        get_internal_number()
+    elif [ "$restart_set_up" == "N" ] || [ "$vendable" == "n" ];then
+        source setup_before_start.sh
+        NUMERO_LOT=$(cat ./lot_encours.txt)
+    fi
+fi
+
 
 SCREEN=$(xdpyinfo | grep dimensions | sed -r 's/^[^0-9]*([0-9]+x[0-9]+).*$/\1/')
 DVD=$(dmesg | egrep -i --color 'cdrom|dvd|cd/rw|writer')
@@ -60,9 +83,11 @@ export ID_HHD_SDD
 export HHDSSD_NAME
 export SERIAL_NUMBER
 export MODEL_HH
+export INTERNAL_NUMBER
 # sudo lshw -json > mydata.json
 # sudo lshw -class multimedia -json > multimedia.json
 sudo lshw -class disk -xml > disk.xml
+
 
 chmod 755 get_value_of_variantes.py
 
@@ -82,4 +107,3 @@ python2 ./push_to_odoo_database.py
 # # push to database (not used)
 chmod 755 ./push_to_database.py
 python2 ./push_to_database.py
-
