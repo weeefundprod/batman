@@ -1,5 +1,5 @@
 #!/bin/bash
-NUMERO_LOT=$(cat ./lot_encours.txt)
+
 get_internal_number (){
     last_number=$(tail -n 1 V-EN-030303.txt | sed 's/.*\(...\)/\1/')
     inc=$(printf "%03d\n" $(($last_number + 1)))
@@ -8,19 +8,26 @@ get_internal_number (){
     echo "$NUMERO_LOT$inc" >> "$NUMERO_LOT".txt
 }
 
+NUMERO_LOT=$(cat ./lot_encours.txt)
 if [ -z "$NUMERO_LOT" ]
 then
     source setup_before_start
 else
-    echo "Le numero de lot $NUMERO_LOT est-il correct ? O/N"
-    read restart_set_up
-    if [ "$restart_set_up" == "O" ] || [ "$vendable" == "o" ];then
-        get_internal_number()
-    elif [ "$restart_set_up" == "N" ] || [ "$vendable" == "n" ];then
+    read -p "Le numero de lot $NUMERO_LOT est-il correct  [O/n] ?" restart_set_up
+    restart_set_up=${restart_set_up:-O}
+    echo $restart_set_up
+    if [ "$restart_set_up" == "O" ] || [ "$restart_set_up" == "o" ];then
+        get_internal_number
+    elif [ "$restart_set_up" == "N" ] || [ "$restart_set_up" == "n" ];then
         source setup_before_start.sh
         NUMERO_LOT=$(cat ./lot_encours.txt)
+        get_internal_number
+    else
+        exit 1
     fi
 fi
+#renvoie le mot de
+echo "Tia974+" | sudo -S lshw
 
 
 SCREEN=$(xdpyinfo | grep dimensions | sed -r 's/^[^0-9]*([0-9]+x[0-9]+).*$/\1/')
