@@ -21,13 +21,11 @@ def push_one_variante(name_of_the_attribute, product_template_id, values, produc
         }])
         id_attributes.append(id_attribute_created)
 
-    print(' my id attribute', id_attributes)
-
     # code qui  genere un attribut line de variantes au produit
     create_attribute_line = models.execute_kw(db, uid, password, 'product.attribute.line', 'create', [{
     'product_tmpl_id': product_template_id , 'attribute_id': id_attributes[0]
     }])
-    print("I have created my attribute line",create_attribute_line)
+    print("I have created my attribute line",name_of_the_attribute, values)
 
     id_of_values = []
     if type(values) == list:
@@ -49,7 +47,7 @@ def get_id_of_value_of_variantes(value, id_of_attribute):
 
     # si la valeur existe pas
     if not id_attribute_value_array:
-        print('La valeur', value,' attribuee n existe pas')
+        print('La valeur de la variante :', value,' attribuee n existe pas')
         id_attribute_value = models.execute_kw(db, uid, password, 'product.attribute.value', 'create', [{
         'name': value, 'attribute_id': id_of_attribute
         }])
@@ -82,12 +80,12 @@ def update_quantity_stock(push_number_serie):
 
 
 
-
+# beginning of the script
 try:
     try:
         uid = common.authenticate(db, username, password, {})
     except xmlrpclib.Error as err:
-        print(err)
+        print("Authentification error",err)
     models = xmlrpclib.ServerProxy('{}/xmlrpc/2/object'.format(url))
     # check if have access
     print("check if I have access : ", models.execute_kw(db, uid, password,
@@ -99,7 +97,7 @@ try:
     'product.product', 'search',
     [[['name', '=', product ]]])
     if name_product:
-        print('I have the name  i got to see the serial number')
+        print('I have the same name, I see the serial number')
         print("read my serial number: ", models.execute_kw(db, uid, password,
         'product.product', 'read',
         [name_product[0]], {'fields': ['name', 'product_id']}))
@@ -119,7 +117,6 @@ try:
         [id_product], {'fields': ['product_tmpl_id']})
 
         template_id = yp[0]['product_tmpl_id'][0]
-        print(template_id, id_product)
 
         try:
             push_one_variante('Processeur', template_id, processor, id_product)
@@ -151,9 +148,13 @@ try:
         except:
             print("can't push variantes bluetooth")
         try:
-            push_one_variante('HHDSSD', template_id, hhdssd, id_product)
+            push_one_variante('HHDSSD', template_id, array_hhd_sdd, id_product)
         except:
             print("can't push variantes hddssd")
+        try:
+            push_one_variante('Num. Lot', template_id, internal_number, id_product)
+        except:
+            print("can't push variantes numero de lot")
     push_serial_number(id_product)
         
 

@@ -24,7 +24,7 @@ try:
     if alreadyExits == False:
         try:
             sql = "INSERT INTO product (SERIAL_NUMBER, MODEL, SKU, VENDOR, SCREEN, HHD_SSD, GRAPHIC_CARD, WEBCAM, BLUETOOTH, DVD) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-            val = (serial_number, product, sku, vendor, screen, hhdssd, graphic_card, webcam, bluetooth, dvd)
+            val = (serial_number, product, sku, vendor, screen, ', '.join(array_hhd_sdd), graphic_card, webcam, bluetooth, dvd)
             cursor.execute( sql,val)
             print("Entree en base")
         except sqlite3.Error as er:

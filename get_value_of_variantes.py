@@ -6,20 +6,8 @@ import sys
 import subprocess
 import re
 from math import *
+import xml.etree.ElementTree as ET
 
-# TODO Fix get disk serial number
-# import xml.etree.ElementTree as ET
-# tree = ET.parse('disk.xml')
-# disk_xml = tree.getroot()
-
-# for child in disk_xml:
-#     for s in child:
-#         print(s.tag, s.name)
-
-# class Hhd_Sdd:
-#   def __init__(self, id_hhd_ssd, model_hhd_sdd):
-#     self.id_hhd_ssd = id_hhd_ssd
-#     self.model_hhd_sdd = model_hhd_sdd
 
 #res = subprocess.check_output(['dmesg','stdout','egrep', '-i', '--color', '"cdrom|dvd|cd/rw|writer"'])
 
@@ -84,17 +72,27 @@ elif 12 <= ram_split <= 256:
 print('RAM: ', ram)
 
 
-hhdssds  = os.environ['MODEL_HH'].splitlines()
-print('HHDSSD: ', hhdssds)
+# get hhd sdd
+tree = ET.parse('disk.xml')
+disk_xml = tree.getroot()
 
-
-# id_hhd_ssds = os.environ['ID_HHD_SDD'].splitlines()
-# print('Id hhd ssd', id_hhd_ssds)
-
-# array_hhd_ssd = []
-# for i in range(len(hhdssds)):
-#     object_hhd_ssd = Hhd_Sdd(id_hhd_ssds[i],hhdssds[i] )
-#     array_hhd_ssd.append(object_hhd_ssd)
+variableDesc = False
+variableSerial =""
+array_hhd_sdd = []
+array_id_hhd_sdd = []
+for child in disk_xml:
+    for s in child:
+        if (s.tag == "description") and (s.text == "ATA Disk"):
+            variableDesc = True
+        if  (variableDesc == True) and (s.tag == "serial"):
+            variableSerial = s.text
+            array_hhd_sdd.append(variableSerial)
+        if  (variableDesc == True) and (s.tag == "product"):
+            id_hhd_sdd = s.text
+            array_id_hhd_sdd.append(id_hhd_sdd)
+    variableDesc = False
+print('HHDSDD: ', array_hhd_sdd)
+print( ' ID HHDSDD: ', array_id_hhd_sdd)
 
 
 
@@ -109,5 +107,8 @@ print('bluetooth: ', bluetooth)
 
 serial_number=os.environ["SERIAL_NUMBER"]
 print('Serial Number: ', serial_number)
+
+internal_number=os.environ["INTERNAL_NUMBER"]
+print('Internal Number: ', internal_number)
 
 print('Out python')

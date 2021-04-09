@@ -5,9 +5,10 @@ get_internal_number (){
     inc=$(printf "%03d\n" $(($last_number + 1)))
     INTERNAL_NUMBER="$NUMERO_LOT$inc"
     echo "$INTERNAL_NUMBER"
-    echo "$NUMERO_LOT$inc" >> "$NUMERO_LOT".txt
+    echo "$INTERNAL_NUMBER" >> "$NUMERO_LOT".txt
 }
 
+# demande si le numéro de lot est correct 
 NUMERO_LOT=$(cat ./lot_encours.txt)
 if [ -z "$NUMERO_LOT" ]
 then
@@ -26,8 +27,26 @@ else
         exit 1
     fi
 fi
-#renvoie le mot de
-echo "Tia974+" | sudo -S lshw
+# fait fonctionner le sudo avec le mot de passe
+# echo "password" | sudo -S lshw -class disk -xml > disk.xml
+sudo lshw -class disk -xml > disk.xml    
+
+distribution=$(lsb_release -si)
+if [ distribution == "Ubuntu" ];then
+    PRODUCT=$(cat /sys/class/dmi/id/product_name)
+    SERIAL_NUMBER=$(sudo cat /sys/class/dmi/id/product_serial)
+    SKU=$(sudo cat /sys/class/dmi/id/product_sku)
+    VENDOR=$(sudo cat /sys/class/dmi/id/sys_vendor)
+  #  HHDSSD_NAME=$(cat /sys/class/block/sda/device/model)
+else
+    PRODUCT=$(sudo dmidecode -s system-product-name)
+    VENDOR=$(sudo dmidecode -s system-manufacturer)
+    SERIAL_NUMBER=$(sudo dmidecode -s system-serial-number)
+    # TODO GET SKU FOR debian
+    SKU=$(sudo cat /sys/class/dmi/id/product_sku)
+fi
+
+
 
 
 SCREEN=$(xdpyinfo | grep dimensions | sed -r 's/^[^0-9]*([0-9]+x[0-9]+).*$/\1/')
@@ -36,22 +55,8 @@ PROCESSOR=$(cat /proc/cpuinfo | grep -i "^model name" | awk -F": " '{print $2}' 
 GRAPHIC_CARD=$(lspci | grep -i --color 'vga\|3d\|2d'| awk -F": " '{print $2}' | head -1 | sed 's/ \+/ /g')
 RAM=$(free -ht | grep Mem | awk '{print $2}')
 BLUETOOTH=$(dmesg | grep -i bluetooth)
-PRODUCT=$(cat /sys/class/dmi/id/product_name)
-SERIAL_NUMBER=$(sudo cat /sys/class/dmi/id/product_serial)
-SKU=$(sudo cat /sys/class/dmi/id/product_sku)
-VENDOR=$(sudo cat /sys/class/dmi/id/sys_vendor)
-HHDSSD_NAME=$(cat /sys/class/block/sda/device/model)
 #need install
 WEBCAM=$(v4l2-ctl --list-devices | head -1| awk -F": " '{print $1}')
-#ID_HHD_SDD=$(sudo hdparm -I /dev/sd? | grep 'Serial\ Number'| awk -F": " '{print $2}'| head -1 | sed 's/ \+/ /g' | sed -e :a -e '/,$/N; s/,\n/ /; ta')
-MODEL_HH=$(sudo cat /proc/scsi/scsi | grep "Vendor: ATA"| awk '{print $4, $5}')
-MODEL_HHD_SDD=$(sudo smartctl -i /dev/sda | grep "Device Model:"| awk '{print $3, $4}')
-ID_HHD_SDD=$(sudo smartctl -i /dev/sda | grep "Serial Number:" | awk '{print $3}')
-
-echo $MODEL_HH
-echo $MODEL_HHD_SDD
-echo $ID_HHD_SDD
-
 
 #IF EMPTY NO DVD 
 if [ -z "$DVD" ]
@@ -67,6 +72,7 @@ then
 else
     BLUETOOTH="oui"
 fi
+
 # A VÉRIFIER
 if [ -z "$WEBCAM" ]
 then
@@ -93,7 +99,6 @@ export MODEL_HH
 export INTERNAL_NUMBER
 # sudo lshw -json > mydata.json
 # sudo lshw -class multimedia -json > multimedia.json
-sudo lshw -class disk -xml > disk.xml
 
 
 chmod 755 get_value_of_variantes.py
