@@ -8,7 +8,8 @@ sudo apt install postgresql
 ~~Activivation postgre user :~~
 sudo -i -u postgres
 psql
-createuser –interactive
+quitter psql
+create user –interactive
 
 ~~Anacondas Installation :~~
 Prendre la dernère version d'anaconda:
@@ -30,5 +31,14 @@ Conda va nous aider à configurer les environnements:
 conda create --name py2 python=2.7
 conda activate py2
 source ~/anaconda3/bin/activate root
-# batman
-# batman
+# INSTALLER PIP POUR PYTHON2
+
+
+# INSTALLER SHORTUUID FOR PYTHON2
+
+wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
+sudo python2.7 get-pip.py
+python2 -m pip install shortuuid
+
+# si erreur fichier non trouvé lors du lancement du script
+update working_directory in launch_script.sh
