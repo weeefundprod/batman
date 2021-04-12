@@ -10,11 +10,11 @@
 # demande si le numéro de lot est correct (utilise un fichier pour transiter l'info entre deux scripts bash)
 NUMERO_LOT=$(cat ./lot_encours.txt)
 ENTERPRISE=$(cat ./entreprise_encours.txt)
-if [ -z "$NUMERO_LOT" ]
+if [ -z "$NUMERO_LOT" ] || [ -z "$ENTERPRISE" ]
 then
     source setup_before_start
 else
-    read -p "Le numero de lot $NUMERO_LOT est-il correct  [O/n] ?" restart_set_up
+    read -p "Le numero de lot $NUMERO_LOT est-il correct  [O/n] ? " restart_set_up
     restart_set_up=${restart_set_up:-O}
     if [ "$restart_set_up" == "O" ] || [ "$restart_set_up" == "o" ];then
         echo "Start getting informations"
@@ -103,8 +103,8 @@ chmod 755 get_value_of_variantes.py
 
 
 # # use python2 for odoo database
-# chmod 755 ./push_to_odoo_database.py
-# python2 ./push_to_odoo_database.py
+chmod 755 ./push_to_odoo_database.py
+python2 ./push_to_odoo_database.py
 
 # # generate line of product in csv(not used)
 # chmod 755 ./push_to_csv.py
