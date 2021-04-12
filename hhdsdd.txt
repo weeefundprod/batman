@@ -1,0 +1,7 @@
+Attached devices:
+Host: scsi0 Channel: 00 Id: 00 Lun: 00
+  Vendor: ATA      Model: SanDisk SD9SN8W5 Rev: 3002
+  Type:   Direct-Access                    ANSI  SCSI revision: 05
+Host: scsi0 Channel: 00 Id: 00 Lun: 00
+  Vendor: ATA      Model: SanDisk SD9SN8W5 Rev: 3002
+  Type:   Direct-Access                    ANSI  SCSI revision: 05

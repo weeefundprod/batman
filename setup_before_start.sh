@@ -25,11 +25,12 @@ continue_script () {
 }
 
 valid_setup () {
-    num_lot="$vendable-${company^^}-$date-"
+    trigonte=$(echo ${company^^} | cut -c1-3)
+    num_lot="$vendable-${trigonte}-$date-"
     echo "$num_lot"
     echo "Set up fait!"
-    export increment=000
     echo "$num_lot" > lot_encours.txt
+    echo "${company^^}" > entreprise_encours.txt
     . ./main_inventory.sh
 }
 

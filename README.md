@@ -31,20 +31,14 @@ Conda va nous aider à configurer les environnements:
 conda create --name py2 python=2.7
 conda activate py2
 source ~/anaconda3/bin/activate root
-# batman
-# batman
+# INSTALLER PIP POUR PYTHON2
 
 
-sudo dcs
-restore disk
-multicast
+# INSTALLER SHORTUUID FOR PYTHON2
 
+wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
+sudo python2.7 get-pip.py
+python2 -m pip install shortuuid
 
-
-
-32
-300
-allumer faire f12 sur le pc qui reçoit
-
-pour réaliser un nouveau set-up:
-source setup_before_start.sh
+# si erreur fichier non trouvé lors du lancement du script
+update working_directory in launch_script.sh

@@ -1,0 +1,70 @@
+<?xml version="1.0" standalone="yes" ?>
+<!-- créé avec lshw- -->
+<!-- GCC 9.3.0 -->
+<!-- Linux 5.8.0-48-generic #54~20.04.1-Ubuntu SMP Sat Mar 20 13:40:25 UTC 2021 x86_64 -->
+<!-- GNU libc 2 (glibc 2.31) -->
+<list>
+  <node id="disk" claimed="true" class="disk" handle="GUID:ed870628-62e1-4079-8e21-220b5bfd0940">
+   <description>ATA Disk</description>
+   <product>SanDisk SD9SN8W5</product>
+   <physid>0.0.0</physid>
+   <businfo>scsi@0:0.0.0</businfo>
+   <logicalname>/dev/sda</logicalname>
+   <dev>8:0</dev>
+   <version>3002</version>
+   <serial>184467422307</serial>
+   <size units="bytes">512110190592</size>
+   <configuration>
+    <setting id="ansiversion" value="5" />
+    <setting id="guid" value="ed870628-62e1-4079-8e21-220b5bfd0940" />
+    <setting id="logicalsectorsize" value="512" />
+    <setting id="sectorsize" value="512" />
+   </configuration>
+   <capabilities>
+    <capability id="gpt-1.00" >GUID Partition Table version 1.00</capability>
+    <capability id="partitioned" >Partitioned disk</capability>
+    <capability id="partitioned:gpt" >GUID partition table</capability>
+   </capabilities>
+   <hints>
+    <hint name="guid" value="ed870628-62e1-4079-8e21-220b5bfd0940" />
+    <hint name="icon" value="disc" />
+    <hint name="partitions" value="0x80" />
+   </hints>
+  </node>
+  <node id="disk" claimed="true" class="disk" handle="SCSI:01:00:00:00">
+   <description>SCSI Disk</description>
+   <product>ProductCode</product>
+   <vendor>VendorCo</vendor>
+   <physid>0.0.0</physid>
+   <businfo>scsi@1:0.0.0</businfo>
+   <logicalname>/dev/sdb</logicalname>
+   <dev>8:16</dev>
+   <version>2.00</version>
+   <size units="bytes">2004877312</size>
+   <configuration>
+    <setting id="ansiversion" value="4" />
+    <setting id="logicalsectorsize" value="512" />
+    <setting id="sectorsize" value="512" />
+   </configuration>
+   <capabilities>
+    <capability id="removable" >support is removable</capability>
+   </capabilities>
+   <hints>
+    <hint name="bus.icon" value="scsi" />
+    <hint name="icon" value="disc" />
+   </hints>
+    <node id="medium" claimed="true" class="disk">
+     <physid>0</physid>
+     <logicalname>/dev/sdb</logicalname>
+     <dev>8:16</dev>
+     <size units="bytes">2004877312</size>
+     <configuration>
+      <setting id="signature" value="9707f57c" />
+     </configuration>
+     <capabilities>
+      <capability id="partitioned" >Partitioned disk</capability>
+      <capability id="partitioned:dos" >MS-DOS partition table</capability>
+     </capabilities>
+    </node>
+  </node>
+</list>
