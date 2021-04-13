@@ -24,7 +24,7 @@ def push_one_variante(name_of_the_attribute, product_template_id, values, produc
     create_attribute_line = models.execute_kw(db, uid, password, 'product.attribute.line', 'create', [{
     'product_tmpl_id': product_template_id , 'attribute_id': id_attributes[0]
     }])
-    print("I have created my attribute line",name_of_the_attribute, values)
+    print("Je genere une ligne attibut",name_of_the_attribute, values)
 
     id_of_values = []
     if type(values) == list:
@@ -68,14 +68,14 @@ def push_serial_number(id_product):
         }])
         update_quantity_stock(push_number_serie)
     else:
-        print('I have already the same serial number')
+        print('Il y a un numero de serie deja similaire entree dans la bdd Odoo ')
 
 def update_quantity_stock(push_number_serie):
     push_quantity = models.execute_kw(db, uid, password, 'stock.change.product.qty', 'create', [{
     'new_quantity': float(1.0), 'product_id': id_product, 'lot_id': push_number_serie, 'location_id': "12"
     }])
     models.execute_kw(db, uid, password, 'stock.change.product.qty', 'change_product_qty', [push_quantity])
-
+	print("Un nouveau stock avec le produit ", product, "serial number", serial_number, "numero interne", internal_number, "dans la bdd Odoo")
 
 
 
@@ -97,8 +97,8 @@ try:
     'product.product', 'search',
     [[['name', '=', product ]]])
     if name_product:
-        print('I have the same name of product')
-        print("My actual id: ", models.execute_kw(db, uid, password,
+        print('Produit similaire dans la base de donnees Odoo')
+        print("Mon id produit: ", models.execute_kw(db, uid, password,
         'product.product', 'read',
         [name_product[0]], {'fields': ['name', 'product_id']}))
         id_product = name_product[0]
