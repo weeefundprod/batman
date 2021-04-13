@@ -1,12 +1,5 @@
 #!/bin/bash
 
-# get_internal_number (){
-#     last_number=$(tail -n 1 V-EN-030303.txt | sed 's/.*\(...\)/\1/')
-#     inc=$(printf "%03d\n" $(($last_number + 1)))
-#     INTERNAL_NUMBER="$NUMERO_LOT$inc"
-#     echo "$INTERNAL_NUMBER"
-# }
-
 # demande si le numéro de lot est correct (utilise un fichier pour transiter l'info entre deux scripts bash)
 NUMERO_LOT=$(cat ./lot_encours.txt)
 ENTERPRISE=$(cat ./entreprise_encours.txt)
@@ -36,7 +29,6 @@ if [ distribution == "Ubuntu" ];then
     SERIAL_NUMBER=$(sudo cat /sys/class/dmi/id/product_serial)
     SKU=$(sudo cat /sys/class/dmi/id/product_sku)
     VENDOR=$(sudo cat /sys/class/dmi/id/sys_vendor)
-  #  HHDSSD_NAME=$(cat /sys/class/block/sda/device/model)
 else
     PRODUCT=$(sudo dmidecode -s system-product-name)
     VENDOR=$(sudo dmidecode -s system-manufacturer)

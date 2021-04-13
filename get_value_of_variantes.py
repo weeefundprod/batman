@@ -80,10 +80,10 @@ for child in disk_xml:
             variableDesc = True
         if  (variableDesc == True) and (s.tag == "serial"):
             variableSerial = s.text
-            array_hhd_sdd.append(variableSerial)
+            array_id_hhd_sdd.append(variableSerial)
         if  (variableDesc == True) and (s.tag == "product"):
-            id_hhd_sdd = s.text
-            array_id_hhd_sdd.append(id_hhd_sdd)
+            hhd_sdd = s.text
+            array_hhd_sdd.append(hhd_sdd)
     variableDesc = False
 
 
