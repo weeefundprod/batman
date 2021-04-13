@@ -12,12 +12,10 @@ sudo apt-get install sqlitebrowser
  ATTENTION ne pas ouvrir sqlitebrowser pendant une requête!!!!!
 
 # INSTALLER PIP POUR PYTHON2**
-
-
-# INSTALLER SHORTUUID FOR PYTHON2**
-
 wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
 sudo python2.7 get-pip.py
+
+# INSTALLER SHORTUUID FOR PYTHON2**
 python2 -m pip install shortuuid
 
 # si erreur fichier non trouvé lors du lancement du script**
