@@ -135,10 +135,10 @@ try:
         
 
 
-    # id_attribute_value = models.execute_kw(db, uid, password,
-    # 'product.attribute.value', 'search',
-    # [['&',['name', '=', 'TEST' ], [ 'product_ids', '=', name_product]]])
-    # print("id attribute", id_attribute_value)
+    id_attribute_value = models.execute_kw(db, uid, password,
+    'product.attribute.value', 'search',
+    [['&',['name', '=', 'NANA' ], [ 'product_ids', '=', 1317]]])
+    print("id attribute", id_attribute_value)
     # if not id_attribute_value:
     #     push_one_variante('Processeur', 459, "bobo", 1317)
 
@@ -146,3 +146,20 @@ try:
 
 except xmlrpclib.Error as err:
         print(err)
+
+
+
+            print("id attribute line", id_attribute_value[0]["value_ids"])
+    read_line = models.execute_kw(db, uid, password, 'product.attribute.line', 'read',         
+    [attribute_line], {'fields': ['attribute_id', 'product_tmpl_id', 'value_ids']})
+    ids_attribute_line= read_line[0]["value_ids"]
+
+    ids_attribute_line.append(value)
+
+    update_attribute_line = models.execute_kw(db, uid, password, 'product.attribute.line', 'write', [[attribute_line], {
+    'value_ids': [(6,0,ids_attribute_line)]
+    }])
+    update_attribute_value = models.execute_kw(db, uid, password, 'product.attribute.value', 'write', [[id_value], {
+    'product_ids': [(6,0,[product_id])]
+    }])
+    print("Raccordement variantes/product", update_attribute_value, update_attribute_line )
