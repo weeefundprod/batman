@@ -140,7 +140,7 @@ try:
         try:
             push_one_variante('Carte Graphique', template_id, graphic_card, id_product)
         except:
-            print("can't push variantes Processeur")
+            print("can't push variantes Carte graphique")
         try:
             push_one_variante('RAM', template_id, ram, id_product)
         except:
