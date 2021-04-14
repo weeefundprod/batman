@@ -11,7 +11,7 @@ def generate_value_of_variantes(value, id_of_attribute):
     id_attribute_value_array = models.execute_kw(db, uid, password,
     'product.attribute.value', 'search',
     [['&',['name', '=', value ], [ 'attribute_id.id', '=', id_of_attribute]]])
-    print(id_attribute_value_array, "difbefuo")
+    print(id_attribute_value_array, "14")
     # si la valeur existe pas
     if not id_attribute_value_array:
         print('La valeur de la variante :', value,' attribuee n existe pas', id_of_attribute)
@@ -39,6 +39,8 @@ def push_one_variante(name_of_the_attribute, product_template_id, values, produc
         'name': name_of_the_attribute
         }])
         id_attributes.append(id_attribute_created)
+
+
     # cherche attribut line
     id_attribute_line = models.execute_kw(db, uid, password,
     'product.attribute.line', 'search',
@@ -46,9 +48,9 @@ def push_one_variante(name_of_the_attribute, product_template_id, values, produc
     if not id_attribute_line:
         print("si pas attribute line  creer une attribute line et une value")
         id_attribute_line = create_attribute_line(product_template_id, id_attributes[0] )
-        print("oh")
         id_of_value=generate_value_of_variantes(values, id_attributes[0])
-        link_value_to_product(id_of_value, id_attribute_line, product_id)
+        print("da", id_attribute_line, id_of_value)
+        link_value_to_product([id_of_value], [id_attribute_line], product_id)
     else:
         print('verifie attribute value est bien  attribuee au produit')
         id_of_values = []
@@ -60,32 +62,40 @@ def push_one_variante(name_of_the_attribute, product_template_id, values, produc
                 print("si attribute value est la ne touche pas sinon cree une variante et update le stock", id_attr_value)
                 id_of_values.append(generate_value_of_variantes(value, id_attributes[0]))
         else:
+            id_attr_value =  models.execute_kw(db, uid, password,
+            'product.attribute.value', 'search',
+            [['&',['name', '=', values], [ 'attribute_id.id', '=', id_attribute_line],[ 'product_ids', '=', product_id]]])
+            print("si attribute value est la ne touche pas sinon cree une variante et update le stock", id_attr_value)
+        if not id_attr_value:
             id_of_values.append(generate_value_of_variantes(values, id_attributes[0]))
-        
+            print("deeeeeeeeeee", id_attribute_line, id_of_values)
+            link_value_to_product(id_of_values, id_attribute_line, product_id)
+
+        else: 
+            print("mes valeurs id 75", id_of_values)
+            print("value is already created don't touch it")
         # attr_value =  models.execute_kw(db, uid, password,
         # 'product.attribute.value', 'read',
         # [586], {'fields': ['display_name', 'name', 'product_ids', 'attribute_id', 'value_ids']})
         # print(attr_value)
-        if not id_attr_value:
-            same_product_with_same_variantes_exists = False
-            generate_value_of_variantes(value, id_attribute_line[0])
-        else:
-            print("value is already created don't touch it")
+
 
 def link_value_to_product(id_value, attribute_line, product_id):
     print("id attribute line", id_value, attribute_line, product_id)
     read_line = models.execute_kw(db, uid, password, 'product.attribute.line', 'read',         
     [attribute_line], {'fields': ['attribute_id', 'product_tmpl_id', 'value_ids']})
     ids_attribute_value= read_line[0]["value_ids"]
-    ids_attribute_value.append(id_value)
+    ids_attribute_value.append(id_value[0])
     print(ids_attribute_value)
 
-    update_attribute_line = models.execute_kw(db, uid, password, 'product.attribute.line', 'write', [[attribute_line], {
-    'value_ids': [(6,0,ids_attribute_value)]
+    update_attribute_line = models.execute_kw(db, uid, password, 'product.attribute.line', 'write', [attribute_line, {
+    'value_ids': [(6,False,ids_attribute_value)]
     }])
-    update_attribute_value = models.execute_kw(db, uid, password, 'product.attribute.value', 'write', [[id_value], {
-    'product_ids': [(6,0,[product_id])]
-    }])
+    print(update_attribute_line, "myy update")
+
+    # update_attribute_value = models.execute_kw(db, uid, password, 'product.attribute.value', 'write', [id_value, {
+    # 'product_ids': [(6,0,[product_id])]
+    # }])
     print("Raccordement variantes/product", update_attribute_value, update_attribute_line )
 
 
@@ -99,17 +109,11 @@ def create_attribute_line(product_template_id, id_attribute ):
 
 
 def push_serial_number(id_product):
-    stock = models.execute_kw(db, uid, password,
-    'stock.production.lot', 'search',
-    [[['ref', '=', serial_number ]]])
-    if not stock:
-        # cree numero de lot mais ne le lie pas a la product
-        push_number_serie = models.execute_kw(db, uid, password, 'stock.production.lot', 'create', [{
-        'name': internal_number, 'ref': serial_number, 'product_id': id_product, 'product_qty':"1.0"
-        }])
-        update_quantity_stock(push_number_serie)
-    else:
-        print('Il y a un numero de serie deja similaire entree dans la bdd Odoo ')
+    # cree numero de lot mais ne le lie pas a la product
+    push_number_serie = models.execute_kw(db, uid, password, 'stock.production.lot', 'create', [{
+    'name': internal_number, 'ref': serial_number, 'product_id': id_product, 'product_qty':"1.0"
+    }])
+    update_quantity_stock(push_number_serie)
 
 def update_quantity_stock(push_number_serie):
     push_quantity = models.execute_kw(db, uid, password, 'stock.change.product.qty', 'create', [{
@@ -198,7 +202,6 @@ try:
                 print("My product: ", product_to_read)
 
                 template_id = product_to_read[0]['product_tmpl_id'][0]
-                # verify the variantes are the same
                 push_all_variantes(template_id, id_product)
                 
             if [same_product_with_same_variantes_exists == True]:
