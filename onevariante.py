@@ -15,22 +15,23 @@ try:
     try:
         id_products= models.execute_kw(db, uid, password,
         'product.product', 'search',
-        [[['name', '=', 'totor' ]]])
+        [[['name', '=', 'mama' ]]])
         print(id_products)
         id_product= models.execute_kw(db, uid, password,
-        'product.product', 'read',
-        [1803], {'fields': ['attribute_id', 'product_ids', 'value_ids', 'product_variant_id', 'product_variant_ids',"product_tmpl_id"]})
+        'product.attribute.line', 'read',
+        [1766], {'fields': ['value_ids', 'product_ids', 'attribute_line_ids', 'product_id', 'product_ids',"product_tmpl_id"]})
         print(id_product)
         id_tmpl= models.execute_kw(db, uid, password,
-        'product.template', 'read',
-        [777], {'fields': ['attribute_id', 'product_ids', 'value_ids', 'product_variant_id', 'product_variant_ids',"product_tmpl_id", "attribute_line_ids"]})
+        'product.attribute.value', 'search',
+        [[['name', '=', 'mm' ]]])
         print(id_tmpl)
-        id_product = models.execute_kw(db, uid, password, 'product.product', 'create', [{
-        'name': "totor", 'type': "product", "is_product_variant": True, "product_variant_id": [(6,0,[1801])]
-        }])
+        # id_product = models.execute_kw(db, uid, password, 'product.product', 'create', [{
+        # 'name': "mama", 'type': "product"
+        # }])
 
         what=models.execute_kw(db, uid, password, 'product.template', 'create_variant_ids', [777])
         print(what)
+
 
 
 # class ProductTemplate(models.Model):

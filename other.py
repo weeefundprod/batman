@@ -56,17 +56,17 @@ def push_one_variante(name_of_the_attribute, product_template_id, values, produc
         id_of_values = []
         if type(values) == list:
             for value in values:
-                id_attr_value =  models.execute_kw(db, uid, password,
+                id_attribute_value =  models.execute_kw(db, uid, password,
                 'product.attribute.value', 'search',
                 [['&',['name', '=', value], [ 'attribute_id.id', '=', id_attribute_line],[ 'product_ids', '=', product_id]]])
-                print("si attribute value est la ne touche pas sinon cree une variante et update le stock", id_attr_value)
+                print("si attribute value est la ne touche pas sinon cree une variante et update le stock", id_attribute_value)
                 id_of_values.append(generate_value_of_variantes(value, id_attributes[0]))
         else:
-            id_attr_value =  models.execute_kw(db, uid, password,
+            id_attribute_value =  models.execute_kw(db, uid, password,
             'product.attribute.value', 'search',
             [['&',['name', '=', values], [ 'attribute_id.id', '=', id_attribute_line],[ 'product_ids', '=', product_id]]])
-            print("si attribute value est la ne touche pas sinon cree une variante et update le stock", id_attr_value)
-        if not id_attr_value:
+            print("si attribute value est la ne touche pas sinon cree une variante et update le stock", id_attribute_value)
+        if not id_attribute_value:
             id_of_values.append(generate_value_of_variantes(values, id_attributes[0]))
             print("deeeeeeeeeee", id_attribute_line, id_of_values)
             link_value_to_product(id_of_values, id_attribute_line, product_id)
@@ -122,30 +122,67 @@ def update_quantity_stock(push_number_serie):
     models.execute_kw(db, uid, password, 'stock.change.product.qty', 'change_product_qty', [push_quantity])
     print("Un nouveau stock avec le produit ", product, "serial number", serial_number, "numero interne", internal_number, "dans la bdd Odoo")
 
-def verify_product():
-    array=[]
-    array.append(verify_variantes_are_the_same().value)
-    array.append(verify_variantes_are_the_same().value)
-    if array_values 
+def areEqual(arr1, arr2, n, m):
+ 
+    # If lengths of array are not
+    # equal means array are not equal
+    if (n != m):
+        return False
+ 
+    # Sort both arrays
+    arr1.sort()
+    arr2.sort()
+ 
+    # Linearly compare elements
+    for i in range(0, n - 1):
+        if (arr1[i] != arr2[i]):
+            return False
+ 
+    # If all elements were same.
+    return True
 
-def verify_variantes_are_the_same(id_name_product):
+def verify_variantes_are_the_same(name_of_the_attribute, value_attribute, product_tmpl, id_product):
     id_attributes = models.execute_kw(db, uid, password,
     'product.attribute', 'search',
     [[['name', '=', name_of_the_attribute ]]])
- # cherche attribut line
+    # cherche attribut line
     id_attribute_line = models.execute_kw(db, uid, password,
     'product.attribute.line', 'search',
-    [['&',['product_tmpl_id.id', '=', product_template_id ], [ 'attribute_id.id', '=', id_attributes[0]]]])
-    if not id_attribute_line:
-        return False
-    else:
+    [['&',['product_tmpl_id.id', '=', product_tmpl ], [ 'attribute_id.id', '=', id_attributes[0]]]])
+    if id_attribute_line:
         id_attr_value =  models.execute_kw(db, uid, password,
         'product.attribute.value', 'search',
-        [['&',['name', '=', value], [ 'attribute_id.id', '=', id_attribute_line],[ 'product_ids', '=', product_id]]])
-    d = dict(); 
-    d['str'] = "GeeksforGeeks"
-    d['x']   = 20
-    return id_attribute_line_array, id_attr_value_array
+        [['&',['name', '=', value_attribute], [ 'attribute_id.id', '=', id_attribute_line],[ 'product_ids', '=', id_product]]])
+    d = dict()
+    print(id_attribute_line )
+    if id_attr_value:
+        d['value'] = id_attr_value[0]
+    else:
+        d['value']='NULL'
+    if id_attr_value:
+        d['line']   = id_attribute_line[0]
+    else:
+        d['line']   = 'NULL'
+    print("ddddd", d)
+    return d
+
+def verify_product_are_the_same(product_attribute_values, product_attribute_lines, id_product, product_tmpl):
+    array_values=[]
+    array_lines=[]
+    processor_verif = verify_variantes_are_the_same("Processeur", processor, product_tmpl, id_product)
+    array_lines.append(processor_verif['line'])
+    array_values.append(processor_verif['value'])
+    array_values_are_equal= areEqual(array_values, product_attribute_values, len(array_values), len(product_attribute_values))
+    array_line_are_equal= areEqual(array_lines, product_attribute_lines, len(array_lines), len(product_attribute_lines))
+    if (array_values_are_equal == True ) and (array_line_are_equal == True):
+        return True
+    else:
+        return False
+
+ 
+ 
+
+
 
 def push_all_variantes(template_id, id_product):
     try:
@@ -220,15 +257,22 @@ try:
 
                 print("My product: ", product_to_read)
 
+                values_ids = product_to_read[0]["attribute_value_ids"]
+                print('values id', values_ids)
+                attr_ids = product_to_read[0]["attribute_line_ids"]
+                print('att id', attr_ids)
+                print("attribute vaalue", values_ids)
+
                 template_id = product_to_read[0]['product_tmpl_id'][0]
                 # push_all_variantes(template_id, id_product)
-                same_product_with_same_variantes_exists = verify_product_are_the_same()
+                same_product_with_same_variantes_exists = verify_product_are_the_same(values_ids, attr_ids, id_product, template_id)
+                print("iudhudh", same_product_with_same_variantes_exists)
                 
-                if [same_product_with_same_variantes_exists == True]:
-                    print("just update le stock")
-                    push_serial_number(id_product)
-                else:
-                    print("try other product")
+            if [same_product_with_same_variantes_exists == True]:
+                print("just update le stock")
+                push_serial_number(id_product)
+            else:
+                print("try other product")
             if same_product_with_same_variantes_exists == False:
                 create_new_product()
         
