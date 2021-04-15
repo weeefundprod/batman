@@ -98,3 +98,5 @@ bluetooth=os.environ["BLUETOOTH"]
 enterprise=os.environ["ENTERPRISE"]
 
 internal_number=os.environ["NUMERO_LOT"]+shortuuid.ShortUUID().random(length=3)+'-'+enterprise
+
+vendable=os.environ["VENDABLE"]

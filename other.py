@@ -6,6 +6,7 @@ try:
     common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
 except xmlrpclib.Error as err:
     print(err)
+    
 def generate_value_of_variantes(value, id_of_attribute):
     print("bqskjdbkubeu", value, id_of_attribute)
     id_attribute_value_array = models.execute_kw(db, uid, password,
@@ -93,9 +94,9 @@ def link_value_to_product(id_value, attribute_line, product_id):
     }])
     print(update_attribute_line, "myy update")
 
-    # update_attribute_value = models.execute_kw(db, uid, password, 'product.attribute.value', 'write', [id_value, {
-    # 'product_ids': [(6,0,[product_id])]
-    # }])
+    update_attribute_value = models.execute_kw(db, uid, password, 'product.attribute.value', 'write', [id_value, {
+    'product_ids': [(6,0,[product_id])]
+    }])
     print("Raccordement variantes/product", update_attribute_value, update_attribute_line )
 
 
@@ -145,6 +146,7 @@ def verify_variantes_are_the_same(name_of_the_attribute, value_attribute, produc
     id_attributes = models.execute_kw(db, uid, password,
     'product.attribute', 'search',
     [[['name', '=', name_of_the_attribute ]]])
+    id_attr_value=[]
     # cherche attribut line
     id_attribute_line = models.execute_kw(db, uid, password,
     'product.attribute.line', 'search',
@@ -163,7 +165,6 @@ def verify_variantes_are_the_same(name_of_the_attribute, value_attribute, produc
         d['line']   = id_attribute_line[0]
     else:
         d['line']   = 'NULL'
-    print("ddddd", d)
     return d
 
 def verify_product_are_the_same(product_attribute_values, product_attribute_lines, id_product, product_tmpl):
@@ -189,8 +190,7 @@ def push_all_variantes(template_id, id_product):
         push_one_variante('Processeur', template_id, processor, id_product)
     except:
         print("can't push variantes Processeur")
-
-"""     try:
+    try:
         push_one_variante('Carte Graphique', template_id, graphic_card, id_product)
     except:
         print("can't push variantes Processeur")
@@ -215,9 +215,14 @@ def push_all_variantes(template_id, id_product):
     except:
         print("can't push variantes bluetooth")
     try:
-        push_one_variante('HHDSSD', template_id, array_hhd_sdd, id_product)
+        push_one_variante('HHDSDD', template_id, array_hhd_sdd, id_product)
     except:
-        print("can't push variantes hddssd") """
+        print("can't push variantes hddssd")
+    try:
+        push_one_variante('Vendable', template_id, array_hhd_sdd, id_product)
+    except:
+        print("can't push variantes hddssd")
+
 
 
 
@@ -250,6 +255,7 @@ try:
         if id_same_name_products:
             print('Produit similaire dans la base de donnees Odoo')
             same_product_with_same_variantes_exists = False
+            same_product= []
             for id_product in id_same_name_products:
                 product_to_read = models.execute_kw(db, uid, password,
                 'product.product', 'read',
@@ -266,15 +272,29 @@ try:
                 template_id = product_to_read[0]['product_tmpl_id'][0]
                 # push_all_variantes(template_id, id_product)
                 same_product_with_same_variantes_exists = verify_product_are_the_same(values_ids, attr_ids, id_product, template_id)
+                if same_product_with_same_variantes_exists == True:
+                    same_product.append(id_product)
                 print("iudhudh", same_product_with_same_variantes_exists)
                 
-            if [same_product_with_same_variantes_exists == True]:
-                print("just update le stock")
-                push_serial_number(id_product)
+            if same_product_with_same_variantes_exists == True:
+                print("just update le stock", same_product_with_same_variantes_exists)
+                push_serial_number(same_product[0])
             else:
-                print("try other product")
-            if same_product_with_same_variantes_exists == False:
-                create_new_product()
+                print("I create a new product")
+
+                #create the product
+                id_product = models.execute_kw(db, uid, password, 'product.product', 'create', [{
+                'name': product, 'type': "product"
+                }])
+                
+                # find id template
+                yp = models.execute_kw(db, uid, password,
+                'product.product', 'read',
+                [id_product], {'fields': ['product_tmpl_id']})
+
+                template_id = yp[0]['product_tmpl_id'][0]
+                push_all_variantes(template_id, id_product)
+                push_serial_number(id_product)
         
         else:
             print("I create a new product")

@@ -4,5 +4,5 @@ import shortuuid
 
 serial_number=shortuuid.uuid()
 internal_number="ASPdccSIDE"+shortuuid.ShortUUID().random(length=5)
-product= "totor"
+product= "works"
 processor="mm"
