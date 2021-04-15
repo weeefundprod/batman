@@ -122,11 +122,30 @@ def update_quantity_stock(push_number_serie):
     models.execute_kw(db, uid, password, 'stock.change.product.qty', 'change_product_qty', [push_quantity])
     print("Un nouveau stock avec le produit ", product, "serial number", serial_number, "numero interne", internal_number, "dans la bdd Odoo")
 
+def verify_product():
+    array=[]
+    array.append(verify_variantes_are_the_same().value)
+    array.append(verify_variantes_are_the_same().value)
+    if array_values 
 
 def verify_variantes_are_the_same(id_name_product):
+    id_attributes = models.execute_kw(db, uid, password,
+    'product.attribute', 'search',
+    [[['name', '=', name_of_the_attribute ]]])
+ # cherche attribut line
     id_attribute_line = models.execute_kw(db, uid, password,
-    'product.attribute.value', 'search',
-    [['&',['name', '=', value ], [ 'attribute_id.id', '=', id_of_attribute]]])
+    'product.attribute.line', 'search',
+    [['&',['product_tmpl_id.id', '=', product_template_id ], [ 'attribute_id.id', '=', id_attributes[0]]]])
+    if not id_attribute_line:
+        return False
+    else:
+        id_attr_value =  models.execute_kw(db, uid, password,
+        'product.attribute.value', 'search',
+        [['&',['name', '=', value], [ 'attribute_id.id', '=', id_attribute_line],[ 'product_ids', '=', product_id]]])
+    d = dict(); 
+    d['str'] = "GeeksforGeeks"
+    d['x']   = 20
+    return id_attribute_line_array, id_attr_value_array
 
 def push_all_variantes(template_id, id_product):
     try:
@@ -193,7 +212,7 @@ try:
         [[['name', '=', product ]]])
         if id_same_name_products:
             print('Produit similaire dans la base de donnees Odoo')
-            same_product_with_same_variantes_exists = True
+            same_product_with_same_variantes_exists = False
             for id_product in id_same_name_products:
                 product_to_read = models.execute_kw(db, uid, password,
                 'product.product', 'read',
@@ -202,13 +221,16 @@ try:
                 print("My product: ", product_to_read)
 
                 template_id = product_to_read[0]['product_tmpl_id'][0]
-                push_all_variantes(template_id, id_product)
+                # push_all_variantes(template_id, id_product)
+                same_product_with_same_variantes_exists = verify_product_are_the_same()
                 
-            if [same_product_with_same_variantes_exists == True]:
-                print("just update le stock")
-                push_serial_number(id_product)
-            else:
-                print("try other product")
+                if [same_product_with_same_variantes_exists == True]:
+                    print("just update le stock")
+                    push_serial_number(id_product)
+                else:
+                    print("try other product")
+            if same_product_with_same_variantes_exists == False:
+                create_new_product()
         
         else:
             print("I create a new product")
