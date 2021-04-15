@@ -6,7 +6,7 @@ try:
     common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
 except xmlrpclib.Error as err:
     print(err)
-    
+
 def generate_value_of_variantes(value, id_of_attribute):
     print("bqskjdbkubeu", value, id_of_attribute)
     id_attribute_value_array = models.execute_kw(db, uid, password,
@@ -219,9 +219,9 @@ def push_all_variantes(template_id, id_product):
     except:
         print("can't push variantes hddssd")
     try:
-        push_one_variante('Vendable', template_id, array_hhd_sdd, id_product)
+        push_one_variante('Vendable', template_id, vendable, id_product)
     except:
-        print("can't push variantes hddssd")
+        print("can't push variantes vendable")
 
 
 

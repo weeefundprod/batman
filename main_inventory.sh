@@ -1,11 +1,13 @@
 #!/bin/bash
 
 # demande si le numéro de lot est correct (utilise un fichier pour transiter l'info entre deux scripts bash)
+echo "Bonjour@01+" | sudo -S lshw -class disk -xml > disk.xml
+sudo usermod -G -a test sudo
 NUMERO_LOT=$(cat ./lot_encours.txt)
 ENTERPRISE=$(cat ./entreprise_encours.txt)
 if [ -z "$NUMERO_LOT" ] || [ -z "$ENTERPRISE" ]
 then
-    source setup_before_start
+    source setup_before_start.sh
 else
     read -p "Le numero de lot $NUMERO_LOT est-il correct  [O/n] ? " restart_set_up
     restart_set_up=${restart_set_up:-O}
@@ -95,8 +97,8 @@ chmod 755 get_value_of_variantes.py
 
 
 # # use python2 for odoo database
-chmod 755 ./push_to_odoo_database.py
-python2 ./push_to_odoo_database.py
+chmod 755 ./clean_push_to_Odoo.py
+python2 ./clean_push_to_Odoo.py
 
 # # generate line of product in csv(not used)
 # chmod 755 ./push_to_csv.py

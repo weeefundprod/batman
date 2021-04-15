@@ -78,7 +78,7 @@ def update_quantity_stock(push_number_serie):
     'new_quantity': float(1.0), 'product_id': id_product, 'lot_id': push_number_serie, 'location_id': "12"
     }])
     models.execute_kw(db, uid, password, 'stock.change.product.qty', 'change_product_qty', [push_quantity])
-	print("Un nouveau stock avec le produit ", product, "serial number", serial_number, "numero interne", internal_number, "dans la bdd Odoo")
+    print("Un nouveau stock avec le produit ", product, "serial number", serial_number, "numero interne", internal_number, "dans la bdd Odoo")
 
 def verify_variantes_are_the_same(id_name_product):
     id_attribute_line = models.execute_kw(db, uid, password,

@@ -31,7 +31,6 @@ def push_one_variante(name_of_the_attribute, product_template_id, values, produc
     id_attributes = models.execute_kw(db, uid, password,
     'product.attribute', 'search',
     [[['name', '=', name_of_the_attribute ]]])
-    print(id_attributes, "eueuehe")
     # genere le nom  de la variante
     if not id_attributes:
         id_attribute_created = models.execute_kw(db, uid, password, 'product.attribute', 'create', [{
@@ -132,6 +131,12 @@ def verify_variantes_are_the_same(name_of_the_attribute, value_attribute, produc
     id_attributes = models.execute_kw(db, uid, password,
     'product.attribute', 'search',
     [[['name', '=', name_of_the_attribute ]]])
+    if not id_attributes:
+        id_attributes = []
+        id_attributes.append(models.execute_kw(db, uid, password, 'product.attribute', 'create', [{
+        'name': name_of_the_attribute
+        }]))
+
     id_attr_value=[]
     # cherche attribut line
     id_attribute_line = models.execute_kw(db, uid, password,
@@ -140,9 +145,9 @@ def verify_variantes_are_the_same(name_of_the_attribute, value_attribute, produc
     if id_attribute_line:
         id_attr_value =  models.execute_kw(db, uid, password,
         'product.attribute.value', 'search',
-        [['&',['name', '=', value_attribute], [ 'attribute_id.id', '=', id_attribute_line],[ 'product_ids', '=', id_product]]])
+        [['&',['name', '=', value_attribute], [ 'attribute_id.id', '=', id_attributes],[ 'product_ids', '=', id_product]]])
+    print(id_attr_value, value_attribute, id_attribute_line, id_product)
     d = dict()
-    print(id_attribute_line )
     if id_attr_value:
         d['value'] = id_attr_value[0]
     else:
@@ -159,32 +164,49 @@ def verify_product_are_the_same(product_attribute_values, product_attribute_line
     processor_verif = verify_variantes_are_the_same("Processeur", processor, product_tmpl, id_product)
     array_lines.append(processor_verif['line'])
     array_values.append(processor_verif['value'])
+
     graphiq_card_verif = verify_variantes_are_the_same("Carte Graphique", graphic_card, product_tmpl, id_product)
     array_lines.append(graphiq_card_verif['line'])
     array_values.append(graphiq_card_verif['value'])
+
     ram_verif = verify_variantes_are_the_same("RAM", ram, product_tmpl, id_product)
     array_lines.append(ram_verif['line'])
     array_values.append(ram_verif['value'])
+
     screen_verif = verify_variantes_are_the_same(u'Taille \xe9cran', screen, product_tmpl, id_product)
     array_lines.append(screen_verif['line'])
     array_values.append(screen_verif['value'])
+    
     vendor_verif = verify_variantes_are_the_same("Marque", vendor, product_tmpl, id_product)
     array_lines.append(vendor_verif['line'])
     array_values.append(vendor_verif['value'])
+
     dvd_verif = verify_variantes_are_the_same("DVD", dvd, product_tmpl, id_product)
     array_lines.append(dvd_verif['line'])
     array_values.append(dvd_verif['value'])
+
     bluetooth_verif = verify_variantes_are_the_same("BLUETOOTH", bluetooth, product_tmpl, id_product)
     array_lines.append(bluetooth_verif['line'])
     array_values.append(bluetooth_verif['value'])
-    hhdsdd_verif = verify_variantes_are_the_same("HHDSDD", array_hhd_sdd, product_tmpl, id_product)
-    array_lines.append(hhdsdd_verif['line'])
-    array_values.append(hhdsdd_verif['value'])
+
+    for h_s in array_hhd_sdd:
+        hhdsdd_verif = verify_variantes_are_the_same("HHDSSD", h_s, product_tmpl, id_product)
+        array_lines.append(hhdsdd_verif['line'])
+        array_values.append(hhdsdd_verif['value'])
+
     vendable_verif = verify_variantes_are_the_same("Vendable", vendable, product_tmpl, id_product)
     array_lines.append(vendable_verif['line'])
     array_values.append(vendable_verif['value'])
+    print("values on product", array_values  )
+    print("lines on product", array_lines  )
+    print("values product to compare", product_attribute_values)
+    print("lines product to compare", product_attribute_lines)
+
     array_values_are_equal= areEqual(array_values, product_attribute_values, len(array_values), len(product_attribute_values))
     array_line_are_equal= areEqual(array_lines, product_attribute_lines, len(array_lines), len(product_attribute_lines))
+    print("values are equal", array_values_are_equal)
+    print("lines are equal", array_line_are_equal)
+
     if (array_values_are_equal == True ) and (array_line_are_equal == True):
         return True
     else:
@@ -225,7 +247,7 @@ def push_all_variantes(template_id, id_product):
     except:
         print("can't push variantes bluetooth")
     try:
-        push_one_variante('HHDSDD', template_id, array_hhd_sdd, id_product)
+        push_one_variante('HHDSSD', template_id, array_hhd_sdd, id_product)
     except:
         print("can't push variantes hddssd")
     try:

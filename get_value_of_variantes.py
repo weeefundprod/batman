@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import os
-import test
 import json
 import sys
 import subprocess
@@ -99,4 +98,7 @@ enterprise=os.environ["ENTERPRISE"]
 
 internal_number=os.environ["NUMERO_LOT"]+shortuuid.ShortUUID().random(length=3)+'-'+enterprise
 
-vendable=os.environ["VENDABLE"]
+if internal_number[0] == 'V':
+    vendable = 'oui'
+else:
+    vendable = 'non'
