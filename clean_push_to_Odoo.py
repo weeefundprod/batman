@@ -68,10 +68,6 @@ def push_one_variante(name_of_the_attribute, product_template_id, values, produc
 
         else: 
             print("Valeur deja creee")
-        # attr_value =  models.execute_kw(db, uid, password,
-        # 'product.attribute.value', 'read',
-        # [586], {'fields': ['display_name', 'name', 'product_ids', 'attribute_id', 'value_ids']})
-        # print(attr_value)
 
 
 def link_value_to_product(id_value, attribute_line, product_id):
@@ -163,6 +159,30 @@ def verify_product_are_the_same(product_attribute_values, product_attribute_line
     processor_verif = verify_variantes_are_the_same("Processeur", processor, product_tmpl, id_product)
     array_lines.append(processor_verif['line'])
     array_values.append(processor_verif['value'])
+    graphiq_card_verif = verify_variantes_are_the_same("Carte Graphique", graphic_card, product_tmpl, id_product)
+    array_lines.append(graphiq_card_verif['line'])
+    array_values.append(graphiq_card_verif['value'])
+    ram_verif = verify_variantes_are_the_same("RAM", ram, product_tmpl, id_product)
+    array_lines.append(ram_verif['line'])
+    array_values.append(ram_verif['value'])
+    screen_verif = verify_variantes_are_the_same(u'Taille \xe9cran', screen, product_tmpl, id_product)
+    array_lines.append(screen_verif['line'])
+    array_values.append(screen_verif['value'])
+    vendor_verif = verify_variantes_are_the_same("Marque", vendor, product_tmpl, id_product)
+    array_lines.append(vendor_verif['line'])
+    array_values.append(vendor_verif['value'])
+    dvd_verif = verify_variantes_are_the_same("DVD", dvd, product_tmpl, id_product)
+    array_lines.append(dvd_verif['line'])
+    array_values.append(dvd_verif['value'])
+    bluetooth_verif = verify_variantes_are_the_same("BLUETOOTH", bluetooth, product_tmpl, id_product)
+    array_lines.append(bluetooth_verif['line'])
+    array_values.append(bluetooth_verif['value'])
+    hhdsdd_verif = verify_variantes_are_the_same("HHDSDD", array_hhd_sdd, product_tmpl, id_product)
+    array_lines.append(hhdsdd_verif['line'])
+    array_values.append(hhdsdd_verif['value'])
+    vendable_verif = verify_variantes_are_the_same("Vendable", vendable, product_tmpl, id_product)
+    array_lines.append(vendable_verif['line'])
+    array_values.append(vendable_verif['value'])
     array_values_are_equal= areEqual(array_values, product_attribute_values, len(array_values), len(product_attribute_values))
     array_line_are_equal= areEqual(array_lines, product_attribute_lines, len(array_lines), len(product_attribute_lines))
     if (array_values_are_equal == True ) and (array_line_are_equal == True):
