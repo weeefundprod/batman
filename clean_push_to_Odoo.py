@@ -1,6 +1,16 @@
 import xmlrpclib
 from env import *
 from dumb import *
+import ssl
+
+try:
+    _create_unverified_https_context = ssl._create_unverified_context
+except AttributeError:
+    # Legacy Python that doesn't verify HTTPS certificates by default
+    pass
+else:
+    # Handle target environment that doesn't support HTTPS verification
+    ssl._create_default_https_context = _create_unverified_https_context
 
 try:
     common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
@@ -64,7 +74,6 @@ def push_one_variante(name_of_the_attribute, product_template_id, values, produc
         if not id_attribute_value:
             id_of_values.append(generate_value_of_variantes(values, id_attributes[0]))
             link_value_to_product(id_of_values, id_attribute_line, product_id)
-
         else: 
             print("Valeur deja creee")
 
@@ -145,8 +154,8 @@ def verify_variantes_are_the_same(name_of_the_attribute, value_attribute, produc
     if id_attribute_line:
         id_attr_value =  models.execute_kw(db, uid, password,
         'product.attribute.value', 'search',
-        [['&',['name', '=', value_attribute], [ 'attribute_id.id', '=', id_attributes],[ 'product_ids', '=', id_product]]])
-    print(id_attr_value, value_attribute, id_attribute_line, id_product)
+        [[[ 'attribute_id.id', '=', id_attributes]]])
+    # print(id_attr_value, value_attribute, id_attribute_line, id_product)
     d = dict()
     if id_attr_value:
         d['value'] = id_attr_value[0]
@@ -197,15 +206,15 @@ def verify_product_are_the_same(product_attribute_values, product_attribute_line
     vendable_verif = verify_variantes_are_the_same("Vendable", vendable, product_tmpl, id_product)
     array_lines.append(vendable_verif['line'])
     array_values.append(vendable_verif['value'])
-    print("values on product", array_values  )
-    print("lines on product", array_lines  )
-    print("values product to compare", product_attribute_values)
-    print("lines product to compare", product_attribute_lines)
+    # print("values on product", array_values  )
+    # print("lines on product", array_lines  )
+    # print("values product to compare", product_attribute_values)
+    # print("lines product to compare", product_attribute_lines)
 
     array_values_are_equal= areEqual(array_values, product_attribute_values, len(array_values), len(product_attribute_values))
     array_line_are_equal= areEqual(array_lines, product_attribute_lines, len(array_lines), len(product_attribute_lines))
-    print("values are equal", array_values_are_equal)
-    print("lines are equal", array_line_are_equal)
+    # print("values are equal", array_values_are_equal)
+    # print("lines are equal", array_line_are_equal)
 
     if (array_values_are_equal == True ) and (array_line_are_equal == True):
         return True
@@ -309,7 +318,6 @@ try:
                 print("Update le stock Odoo du produit ", product)
                 push_serial_number(same_product[0])
             else:
-                print("Nouveau produit cree dans la BDD Odoo:", product)
 
                 #create the product
                 id_product = models.execute_kw(db, uid, password, 'product.product', 'create', [{
@@ -326,7 +334,6 @@ try:
                 push_serial_number(id_product)
         
         else:
-            print("Nouveau produit cree dans la BDD Odoo: ", product)
 
             #create the product
             id_product = models.execute_kw(db, uid, password, 'product.product', 'create', [{
