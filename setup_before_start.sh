@@ -1,9 +1,4 @@
 #!/bin/bash
-
-p="P"
-v="V"
-
-
 # My Function
 continue_script () {
     echo "Quel est le nom de l'entreprise ?"
@@ -38,13 +33,13 @@ valid_setup () {
 # Beginning of the script
 echo "Entrer V ou P pour Vendable ou Projet:"
 read vendable
-if [ "$vendable" == "V" ] || [ "$vendable" == "P" ];then
+if [ "$vendable" == "V" ] || [ "$vendable" == "P" ] || [ "$vendable" == "v" ] || [ "$vendable" == "p" ];then
     continue_script
 else
     echo "La valeur n'est pas bonne."
     echo "Entrer V ou P pour Vendable ou Projet:"
     read vendable
-    if [ "$vendable" == "V" ] || [ "$vendable" == "P" ];then
+    if [ "$vendable" == "V" ] || [ "$vendable" == "P" ] || [ "$vendable" == "v" ] || [ "$vendable" == "p" ];then
         continue_script
     else
         echo "La valeur entrée n'est toujours pas bonne"
