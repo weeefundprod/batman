@@ -116,6 +116,7 @@ def update_quantity_stock(push_number_serie):
     }])
     models.execute_kw(db, uid, password, 'stock.change.product.qty', 'change_product_qty', [push_quantity])
     print("Un nouveau stock avec le produit ", product, "serial number", serial_number, "numero interne", internal_number, "dans la bdd Odoo")
+    quit()
 
 def areEqual(arr1, arr2, n, m):
  
@@ -302,7 +303,7 @@ try:
                 'product.product', 'read',
                 [id_product], {'fields': ['product_tmpl_id', 'attribute_value_ids', 'attribute_line_ids']})
 
-                print("Mon product: ", product_to_read)
+                print("Mon product a comparer: ", product_to_read)
 
                 values_ids = product_to_read[0]["attribute_value_ids"]
                 attr_ids = product_to_read[0]["attribute_line_ids"]
@@ -350,7 +351,7 @@ try:
             push_serial_number(id_product)
     else:
         print('Il y a un numero de serie deja similaire entree dans la bdd Odoo ')
-        
+        quit()
 
 except xmlrpclib.Error as err:
     print(err)

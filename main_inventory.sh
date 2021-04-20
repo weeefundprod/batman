@@ -1,11 +1,10 @@
 #!/bin/bash
 
 # demande si le numéro de lot est correct (utilise un fichier pour transiter l'info entre deux scripts bash)
-echo "Bonjour@01+" | sudo -S lshw -class disk -xml > disk.xml
-sudo usermod -G -a test sudo
+echo "deb" | sudo -S usermod -G -a test sudo
 NUMERO_LOT=$(cat ./lot_encours.txt)
 ENTERPRISE=$(cat ./entreprise_encours.txt)
-if [ -z "$NUMERO_LOT" ] || [ -z "$ENTERPRISE" ]
+if [ -z "$NUMERO_LOT" ] && [ -z "$ENTERPRISE" ]
 then
     source setup_before_start.sh
 else
@@ -23,7 +22,6 @@ else
 fi
 
 # fait fonctionner le sudo avec le mot de passe
-# echo "password" | sudo -S lshw -class disk -xml > disk.xml
 
 distribution=$(lsb_release -si)
 if [ distribution == "Ubuntu" ];then
@@ -108,3 +106,4 @@ python2 ./clean_push_to_Odoo.py
 chmod 755 ./push_to_database.py
 python2 ./push_to_database.py
 rm "$SERIAL_NUMBER".xml
+exit 1
