@@ -15,6 +15,7 @@ continue_script () {
             valid_setup
         else
             echo "La valeur entrée n'est pas bonne."
+            exit 1
         fi
     fi
 }

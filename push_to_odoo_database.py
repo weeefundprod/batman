@@ -176,11 +176,6 @@ try:
             except:
                 print("can't push variantes vendable")
 
-
-            # try:
-            #     push_one_variante('In', template_id, internal_number, id_product)
-            # except:
-            #     print("can't push variantes numero de lot")
         push_serial_number(id_product)
         quit()
     else:
